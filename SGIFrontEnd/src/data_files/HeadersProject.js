@@ -1,0 +1,28 @@
+const HeadersProject = [
+  {
+    heading: 'Titulo del proyecto',
+    value: 'title',
+  },
+  {
+    heading: 'Fecha de inicio',
+    value: 'startDate',
+  },
+  {
+    heading: 'Fecha de fin',
+    value: 'endDate',
+  },
+  {
+    heading: 'Estado',
+    value: 'status',
+  },
+  {
+    heading: 'Tipo de financiamiento',
+    value: 'fundingType',
+  },
+  {
+    heading: 'Monto',
+    value: 'amount',
+  },
+]
+
+export default HeadersProject;
