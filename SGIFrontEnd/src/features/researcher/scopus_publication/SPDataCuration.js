@@ -1,18 +1,24 @@
 import React, { useState } from 'react'
-import HeadersSP from '../../../data_files/HeadersSP'
 import { CButton, CCard, CCardBody, CCardSubtitle, CCol, CFormCheck, CFormSelect, CRow } from '@coreui/react'
 import InfoSP from '../../../components/cards/InfoSP'
 import TabsSP from '../../../components/tabs/TabsSP'
 import { dataSPDataCuration, rgroupsSPDataCuration } from '../../../data_files/HardData'
+import { HeadersSP } from '../../../data_files/HeadersSP'
+import { useParams } from 'react-router-dom'
 
 const SPDataCuration = () => {
+  const { elementID } = useParams()
   const [isPrincipalAuthor, setIsPrincipalAuthor] = useState(null);
   const [isRelatedProject, setIsRelatedProject] = useState(null);
   const [isActivatedQ, setActivatedQ] = useState(false)
   const [selectedGroups, setSelectedGroups] = useState([]);
+  const [selectedOptionAuthor, setSelectedOptionAuthor] = useState('');
+
+  const [revisionData, setRevisionData] = useState([]);
   
   const handleRadioChange = (e) => {
     setIsPrincipalAuthor(e.target.value === 'YesAuthor');
+    setSelectedOptionAuthor('')
     setActivatedQ(true)
   };
 
@@ -25,6 +31,15 @@ const SPDataCuration = () => {
 
   const handleRadioChangeProject = (e) => {
     setIsRelatedProject(e.target.value === 'Yes');
+  };
+
+  const handleRevision = () => {
+    console.log(isPrincipalAuthor);
+    console.log(selectedGroups);
+    console.log(selectedOptionAuthor);
+
+    const results = [];
+    setRevisionData(results);
   };
 
   const authorOptions = dataSPDataCuration.map((item) => {
@@ -57,7 +72,17 @@ const SPDataCuration = () => {
             <CCol>
             {
               (isPrincipalAuthor === false) &&
-              (<CFormSelect className='mt-2' options={authorOptions} label="Seleccione al autor principal"/>)
+              (
+                <CFormSelect aria-label="principalAuthor" value={selectedOptionAuthor} onChange={(e) => setSelectedOptionAuthor(e.target.value)}>
+                  <option value="">Seleccione al autor principal</option>
+                  {dataSPDataCuration[elementID - 1].author.map((option) => (
+                    <option  key={option.id} value={option.name}>
+                      {option.name}
+                    </option>
+                  ))}
+                </CFormSelect>
+              )
+              /*(<CFormSelect className='mt-2' options={authorOptions} label="Seleccione al autor principal"/>)*/
             }
             </CCol>
           </CRow>
@@ -99,7 +124,7 @@ const SPDataCuration = () => {
       {
         isRelatedProject && isActivatedQ &&
         (
-          <TabsSP /*id del autor*/ typeTab={"scientific"} />
+          <TabsSP SPID={elementID} typeTab={"scientific"} />
         )
       }
 
@@ -109,7 +134,7 @@ const SPDataCuration = () => {
         (
         <div className="d-grid gap-2 d-md-flex justify-content-md-end mt-3 mb-4">
           <CButton color="primary" variant="outline" className="me-md-2">Cancelar</CButton>
-          <CButton color="primary" href="#">Terminar revisión</CButton>
+          <CButton color="primary" onClick={handleRevision}>Terminar revisión</CButton>
         </div>
         )
       }

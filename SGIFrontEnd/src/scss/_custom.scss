@@ -1,1 +1,10 @@
 // Here you can add other styles
+
+.custom-border-padding {
+  border-left: 1px solid #ddd; /* Aquí puedes ajustar el color del borde si es necesario */
+  padding-left: 1.5rem;
+}
+
+.custom-border-padding-eval {
+  border-top: 1px solid #ddd; /* Aquí puedes ajustar el color del borde si es necesario */
+}

@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import ProjectsFilter from '../../../components/filters/ProjectsFilter'
-import HeadersProject from '../../../data_files/HeadersProject'
 import { CButton, CCol, CRow } from '@coreui/react'
 import InfoSPCheck from '../../../components/cards/InfoSPCheck'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { dataProjectSearch } from '../../../data_files/HardData'
+import { HeadersProject } from '../../../data_files/HeadersProject'
 
 const ProjectSearch = () => {
+  const { elementID } = useParams()
   const [count, setCount] = useState(0);
 
   function handleSelection(dataCC) {
@@ -21,7 +22,7 @@ const ProjectSearch = () => {
   const navigate = useNavigate()
 
   const handleNavigation = () => {
-    navigate('/publicaciones/revision/detalle/proyectos/nuevo');
+    navigate('/publicaciones/revision/detalle/' + `${elementID}` + '/proyectos/nuevo');
   }
 
   return (
@@ -43,8 +44,12 @@ const ProjectSearch = () => {
             <div className='text-body-secondary'>{count} elemento(s) seleccionado(s)</div>
         </CCol>
       </CRow>
-        
-      <InfoSPCheck data={dataProjectSearch} headers={HeadersProject} onAction={handleSelection}/>
+      <CRow>
+        <CCol className='mb-3'>
+          <InfoSPCheck data={dataProjectSearch} headers={HeadersProject} onAction={handleSelection}/>
+        </CCol>
+      </CRow>
+      
     </>
   )
 }

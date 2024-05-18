@@ -1,4 +1,4 @@
-const HeadersSP = [
+export const HeadersSP = [
   {
     heading: 'Titulo de la publicacion',
     value: 'title',
@@ -8,7 +8,7 @@ const HeadersSP = [
     value: 'name',
   },
   {
-    heading: 'Autores',
+    heading: 'Autor(es)',
     value: 'author',
   },
   {
@@ -29,4 +29,58 @@ const HeadersSP = [
   },
 ]
 
-export default HeadersSP;
+// ---------------- HEADERS PERFORMANCE EVALUATION ---------------- //
+
+export const HeadersSPEval = [
+  {
+    heading: 'Titulo de la publicacion',
+    value: 'title',
+  },
+  {
+    heading: 'Revista',
+    value: 'name',
+  },
+  {
+    heading: 'Autor(es)',
+    value: 'author',
+  },
+  {
+    heading: 'Tipo de documento',
+    value: 'typeD',
+  },
+  {
+    heading: 'Tipo de fuente',
+    value: 'typeS',
+  },
+  {
+    heading: 'Grupo(s) de Inv.',
+    value: 'group',
+  },
+  {
+    heading: 'Año',
+    value: 'year',
+  },
+  {
+    heading: 'Acciones',
+    value: 'actions',
+  },
+]
+
+export const HeadersGroupsEval= [
+  {
+    heading: 'Grupo de investigación',
+    value: 'name',
+  },
+  {
+    heading: 'Unidad Org.',
+    value: 'orgunit',
+  },
+  {
+    heading: 'Categoría',
+    value: 'category',
+  },
+  {
+    heading: 'Acciones',
+    value: 'actions',
+  },
+]

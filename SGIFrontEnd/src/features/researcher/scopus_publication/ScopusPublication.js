@@ -1,9 +1,8 @@
 import React from 'react'
 import InfoSP from '../../../components/cards/InfoSP'
-import { CCol, CRow } from '@coreui/react'
 import ScopusPubFilter from '../../../components/filters/ScopusPubFilter'
-import HeadersSP from '../../../data_files/HeadersSP'
 import { dataScopusPublication } from '../../../data_files/HardData'
+import { HeadersSP } from '../../../data_files/HeadersSP'
 
 const ScopusPublication = () => {
 
@@ -13,7 +12,7 @@ const ScopusPublication = () => {
       <div className='h4'>Publicaciones en revisión</div>
 
       {/* FILTERS */}
-      <ScopusPubFilter />
+      <ScopusPubFilter data={dataScopusPublication}/>
 
       {/* HEADER */}
       <div className='h5'>Resultados ({dataScopusPublication.length}):</div>

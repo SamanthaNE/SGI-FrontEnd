@@ -1,25 +1,24 @@
 import React, { useState } from 'react'
 import { CButton, CCard, CCardBody, CNav, CNavItem, CNavLink, CTabContent, CTabPane } from '@coreui/react'
 import InfoSP from '../cards/InfoSP'
-import HeadersProject from '../../data_files/HeadersProject'
 import { useNavigate } from 'react-router-dom'
 import HeadersFunding from '../../data_files/HeadersFunding'
-
+import { HeadersProject } from '../../data_files/HeadersProject'
 
 {/* API - ID DEL AUTHOR PARA LLAMAR A TODOS SUS PROYECTOS, PATENTES, PRODUCTOS */}
 {/* API - PARA LLAMAR A TODAS LOS FINANCIAMIENTOS */}
 
-const TabsSP = ({typeTab}) => {
+const TabsSP = ({SPID, typeTab}) => {
   const [activeKey, setActiveKey] = useState(1)
 
   const navigate = useNavigate()
 
   const handleNavigationProject = () => {
-    navigate('/publicaciones/revision/detalle/proyectos');
+    navigate('/publicaciones/revision/detalle/' + `${SPID}` + '/proyectos');
   }
 
   const handleNavigationFunding = () => {
-    navigate('/publicaciones/revision/detalle/proyectos/nuevo/financiamiento');
+    navigate('/publicaciones/revision/detalle/' + `${SPID}` + '/proyectos/nuevo/financiamiento');
   }
   
   return (

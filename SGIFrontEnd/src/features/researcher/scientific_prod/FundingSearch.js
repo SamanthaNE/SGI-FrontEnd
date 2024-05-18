@@ -2,11 +2,12 @@ import React, { useState } from 'react'
 import FundingFilter from '../../../components/filters/FundingFilter'
 import { CButton, CCol, CRow } from '@coreui/react'
 import InfoSPCheck from '../../../components/cards/InfoSPCheck'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import HeadersFunding from '../../../data_files/HeadersFunding'
 import { dataFundingSearch } from '../../../data_files/HardData'
 
 const FundingSearch = () => {
+  const { elementID } = useParams()
   const [count, setCount] = useState(0);
   const navigate = useNavigate()
 
@@ -15,7 +16,7 @@ const FundingSearch = () => {
   }
 
   const handleNavigation = () => {
-    navigate('/publicaciones/revision/detalle/proyectos/nuevo/financiamiento/nuevo');
+    navigate('/publicaciones/revision/detalle/' + `${elementID}` + '/proyectos/nuevo/financiamiento/nuevo');
   }
 
   return (
@@ -38,7 +39,11 @@ const FundingSearch = () => {
         </CCol>
       </CRow>
         
-      <InfoSPCheck data={dataFundingSearch} headers={HeadersFunding} onAction={handleSelection}/>
+      <CRow>
+        <CCol className='mb-3'>
+          <InfoSPCheck data={dataFundingSearch} headers={HeadersFunding} onAction={handleSelection}/>
+        </CCol>
+      </CRow>
     </>
   )
 }

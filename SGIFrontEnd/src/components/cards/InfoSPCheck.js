@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { CCard, CCardBody, CCardText, CCol, CFormCheck, CRow } from '@coreui/react'
 
-const InfoSPCheck = ({data, headers, onAction}) => {
+const InfoSPCheck = ({data, headers, onAction, pagesize = 5}) => {
   const [selectedSP, setSelectedSP] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const handleSelection = (e) => {
     const { checked, value } = e.target;
@@ -11,6 +12,45 @@ const InfoSPCheck = ({data, headers, onAction}) => {
     setSelectedSP(newSelectedSP);
     onAction(newSelectedSP);
   }
+
+  const totalPages = Math.ceil(data.length / pagesize);
+
+  const handlePageChange = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
+  const currentData = data.slice((currentPage - 1) * pagesize, currentPage * pagesize);
+
+  const renderPageNumbers = () => {
+    let startPage = 1;
+    let endPage = totalPages;
+
+    if (totalPages > 3) {
+      if (currentPage <= 2) {
+        startPage = 1;
+        endPage = 3;
+      } else if (currentPage >= totalPages - 1) {
+        startPage = totalPages - 2;
+        endPage = totalPages;
+      } else {
+        startPage = currentPage - 1;
+        endPage = currentPage + 1;
+      }
+    }
+
+    const pageNumbers = [];
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(
+        <li key={i} className={`page-item ${currentPage === i ? 'active' : ''}`}>
+          <button className="page-link" onClick={() => handlePageChange(i)}>{i}</button>
+        </li>
+      );
+    }
+
+    return pageNumbers;
+  };
 
   return (
   <>
@@ -39,7 +79,7 @@ const InfoSPCheck = ({data, headers, onAction}) => {
       :
       (
         <>
-        {Object.values(data).map((obj, indexR) => (
+        {currentData.map((obj, indexR) => (
           <CCard key={indexR} className='mt-1'>
             <CCardBody>
               <CRow>
@@ -67,28 +107,24 @@ const InfoSPCheck = ({data, headers, onAction}) => {
         
         {/* PAGINATION */}
         {/* MODIFICAR: DINAMICO CON LA CANTIDAD DE RESULTADOS */}
-        {
-          (data.length > 1) &&
-          (
-            <nav aria-label="Page navigation example" className='mt-2' >
-              <ul className="pagination justify-content-end">
-                <li className="page-item">
-                  <a className="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                  </a>
-                </li>
-                <li className="page-item"><a className="page-link" href="#">1</a></li>
-                <li className="page-item"><a className="page-link" href="#">2</a></li>
-                <li className="page-item"><a className="page-link" href="#">3</a></li>
-                <li className="page-item">
-                  <a className="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          )
-        }
+        {(data.length > pagesize) && 
+        (
+          <nav aria-label="pageNav" className='mt-2'>
+            <ul className="pagination justify-content-end">
+              <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                <button className="page-link" onClick={() => handlePageChange(currentPage - 1)} aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                </button>
+              </li>
+              {renderPageNumbers()}
+              <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                <button className="page-link" onClick={() => handlePageChange(currentPage + 1)} aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                </button>
+              </li>
+            </ul>
+          </nav>
+        )}
         </>
       )
     }

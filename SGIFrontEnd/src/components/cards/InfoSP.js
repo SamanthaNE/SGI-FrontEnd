@@ -1,13 +1,57 @@
-import React, { useEffect } from 'react'
-import { CButton, CCard, CCardBody, CCardText, CCol, CFormCheck, CRow } from '@coreui/react'
+import React, { useState } from 'react'
+import { CButton, CCard, CCardBody, CCardText, CCol, CRow } from '@coreui/react'
 import { useNavigate } from 'react-router-dom'
 
-const InfoSP = ({data, headers, btnnav, detail}) => {
+const InfoSP = ({data, headers, btnnav, detail, btnmore = "", pagesize = 5}) => {
   const navigate = useNavigate()
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const handleNavigation = () => {
-    navigate(btnnav);
+  const handleNavigationAction = (e) => {
+    navigate(btnnav + `/${e.target.value}`)
   }
+
+  const handleNavigationMore = () => {
+    navigate(btnmore)
+  }
+
+  const totalPages = Math.ceil(data.length / pagesize);
+
+  const handlePageChange = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
+  const currentData = data.slice((currentPage - 1) * pagesize, currentPage * pagesize);
+
+  const renderPageNumbers = () => {
+    let startPage = 1;
+    let endPage = totalPages;
+
+    if (totalPages > 3) {
+      if (currentPage <= 2) {
+        startPage = 1;
+        endPage = 3;
+      } else if (currentPage >= totalPages - 1) {
+        startPage = totalPages - 2;
+        endPage = totalPages;
+      } else {
+        startPage = currentPage - 1;
+        endPage = currentPage + 1;
+      }
+    }
+
+    const pageNumbers = [];
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(
+        <li key={i} className={`page-item ${currentPage === i ? 'active' : ''}`}>
+          <button className="page-link" onClick={() => handlePageChange(i)}>{i}</button>
+        </li>
+      );
+    }
+
+    return pageNumbers;
+  };
 
   return (
   <>
@@ -35,7 +79,7 @@ const InfoSP = ({data, headers, btnnav, detail}) => {
       :
       (
         <>
-        {Object.values(data).map((obj, indexR) => (
+        {currentData.map((obj, indexR) => (
           <CCard key={indexR} className='mt-1'>
             <CCardBody>
               <CRow>
@@ -43,7 +87,11 @@ const InfoSP = ({data, headers, btnnav, detail}) => {
                   return (
                     <CCol key={indexH} className = {indexH == 0 ? ("col-4") : (null)}>
                       {headerItems.value === 'actions' ? 
-                      (<CButton color="primary" variant="ghost" onClick={handleNavigation}>{detail === true ? "Ver detalle" : "--"}</CButton>)
+                      (
+                        <CButton color="primary" variant="ghost" value={obj.id} onClick={handleNavigationAction}>
+                          {detail === true ? "Ver detalle" : "--"}
+                        </CButton>
+                      )
                       :
                       (
                         headerItems.value === 'author' ? 
@@ -66,28 +114,30 @@ const InfoSP = ({data, headers, btnnav, detail}) => {
         
         {/* PAGINATION */}
         {/* MODIFICAR: DINAMICO CON LA CANTIDAD DE RESULTADOS */}
-        {
-          (data.length > 1) &&
-          (
-            <nav aria-label="Page navigation example" className='mt-2' >
-              <ul className="pagination justify-content-end">
-                <li className="page-item">
-                  <a className="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                  </a>
-                </li>
-                <li className="page-item"><a className="page-link" href="#">1</a></li>
-                <li className="page-item"><a className="page-link" href="#">2</a></li>
-                <li className="page-item"><a className="page-link" href="#">3</a></li>
-                <li className="page-item">
-                  <a className="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          )
-        }
+        {(data.length > pagesize) && 
+        (
+          <nav aria-label="pageNav" className='mt-2'>
+            <ul className="pagination justify-content-end">
+              <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                <button className="page-link" onClick={() => handlePageChange(currentPage - 1)} aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                </button>
+              </li>
+              {renderPageNumbers()}
+              <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                <button className="page-link" onClick={() => handlePageChange(currentPage + 1)} aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                </button>
+              </li>
+            </ul>
+          </nav>
+        )}
+
+        {btnmore && btnmore !== "empty" && (
+          <div className="mt-3 d-grid gap-2 d-md-flex justify-content-md-center">
+            <CButton color="primary" variant="outline" onClick={handleNavigationMore}>Ver más</CButton>
+          </div>
+        )}
         </>
       )
     }

@@ -1,5 +1,6 @@
 import React from 'react'
-import { AppContent, AppSidebar, AppFooter, AppHeader } from '../components/index'
+import { AppContent, AppSidebar, AppHeader } from '../components/index'
+import { UserProvider } from '../context/UserContext'
 
 const DefaultLayout = () => {
   return (

@@ -1,7 +1,35 @@
 import { CButton, CCard, CCardBody, CCardSubtitle, CCol, CForm, CFormInput, CFormSelect, CRow } from '@coreui/react'
-import React from 'react'
+import React, { useState } from 'react'
+import { Currency, FFOrg, PFFunding } from '../../../data_files/FiltersData';
 
 const NewFunding = () => {
+  const [fundingName, setFundingName] = useState('');
+  const [selectedOptionFunding, setSelectedOptionFunding] = useState('');
+  const [selectedOptionCurrency, setSelectedOptionCurrency] = useState('');
+  const [fundingAmount, setFundingAmount] = useState('');
+  const [selectedOptionOrg, setSelectedOptionOrg] = useState('');
+  const [fundingData, setFundingData] = useState([]);
+
+  const handleFundingAmountChange = (e) => {
+    const value = e.target.value;
+    const regex = /^[0-9]*\.?[0-9]*$/;
+
+    if (regex.test(value)) {
+      setFundingAmount(value);
+    }
+  };
+
+  const handleFundingData = () => {
+    console.log(fundingName);
+    console.log(selectedOptionFunding);
+    console.log(selectedOptionCurrency);
+    console.log(fundingAmount);
+    console.log(selectedOptionOrg)
+
+    const results = [];
+    setFundingData(results);
+  };
+
   return (
     <>
       {/* PUBLICATION DATA */}
@@ -17,53 +45,59 @@ const NewFunding = () => {
               type="input"
               label="Nombre del financiamiento"
               placeholder="Nombre"
+              value={fundingName} 
+              onChange={(e) => setFundingName(e.target.value)}
             />
           </CForm>
 
-          <CFormSelect className='mb-3' label="Tipo de financiamiento" id="fundingType"
-            options={[
-              'Seleccione',
-              { label: 'Fondos propios', value: '1' },
-              { label: 'Otras modalidades de financiamiento', value: '2' },
-            ]}
-          />
+          <CFormSelect className='mb-3' aria-label="orgunit" label="Entidad financiadora" 
+                        value={selectedOptionOrg} onChange={(e) => setSelectedOptionOrg(e.target.value)}>
+            <option value="">Seleccione una opción</option>
+            {FFOrg.map((option) => (
+              <option  key={option.value} value={option.label}>
+                {option.label}
+              </option>
+            ))}
+          </CFormSelect>
+
+          <CFormSelect className='mb-3' aria-label="typeFunding" label="Tipo de financiamiento" 
+                        value={selectedOptionFunding} onChange={(e) => setSelectedOptionFunding(e.target.value)}>
+            <option value="">Seleccione una opción</option>
+            {PFFunding.map((option) => (
+              <option  key={option.value} value={option.label}>
+                {option.label}
+              </option>
+            ))}
+          </CFormSelect>
 
           <CRow className="align-items-end">
             <CCol>
-              <CFormSelect className='mb-3' label="Monto otorgado" id="currency"
-                options={[
-                  'Moneda',
-                  { label: 'PEN - Sol (S/.)', value: '1' },
-                  { label: 'USD - Dólar estadounidense ($)', value: '2' },
-                  { label: 'EUR - Euro (€)', value: '3' },
-                  { label: 'CAD - Dólar canadiense (C$)', value: '4' },
-                  { label: 'CHF - Franco suizo (Fr)', value: '5' },
-                  { label: 'GBP - Libra esterlina (£)', value: '6' }
-                ]}
-              />
+              <CFormSelect className='mb-3' aria-label="typeFunding" label="Monto otorgado" 
+                            value={selectedOptionCurrency} onChange={(e) => setSelectedOptionCurrency(e.target.value)}>
+                <option value="">Seleccione una opción</option>
+                {Currency.map((option) => (
+                  <option  key={option.value} value={option.label}>
+                    {option.label}
+                  </option>
+                ))}
+              </CFormSelect>
             </CCol>
             <CCol>
               <CFormInput className='mb-3' id="amount"
                 type="input"
                 placeholder="Monto"
+                value={fundingAmount} 
+                onChange={handleFundingAmountChange}
               />
             </CCol>
           </CRow>
-
-          <CFormSelect className='mb-3' label="Entidad financiadora" id="fundingOrg"
-            options={[
-              'Seleccione',
-              { label: 'Vicerrectorado de Investigación', value: '1' },
-              { label: 'Externo', value: '2' },
-            ]}
-          />
         </CCardBody>
       </CCard>
 
       {/* FINISH REV */}       
       <div className="d-grid gap-2 d-md-flex justify-content-md-end mt-3 mb-4">
         <CButton color="primary" variant="outline" className="me-md-2">Cancelar</CButton>
-        <CButton color="primary" href="#">Guardar</CButton>
+        <CButton color="primary" onClick={handleFundingData}>Guardar</CButton>
       </div>
 
     </>

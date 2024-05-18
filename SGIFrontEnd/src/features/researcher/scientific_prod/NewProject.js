@@ -1,14 +1,24 @@
-import { CButton, CCard, CCardBody, CCardSubtitle, CCol, CForm, CFormCheck, CFormInput, CFormLabel, CFormSelect, CRow } from '@coreui/react'
+import { CButton, CCard, CCardBody, CCardSubtitle, CCol, CForm, CFormCheck, CFormInput, CFormSelect, CRow } from '@coreui/react'
 import React, { useState } from 'react'
 import StatusProject from '../../../data_files/StatusProject'
 import TabsSP from '../../../components/tabs/TabsSP'
+import { useParams } from 'react-router-dom'
+import { NPOrg } from '../../../data_files/FiltersData'
+import DateInput from '../../../components/dateInput/DateInput'
 
 const NewProject = () => {
+  const { elementID } = useParams() 
   const [activeStatus, setActiveStatus] = useState(null)
   const [activeSubStatus, setActiveSubStatus] = useState(null)
   const [isProjectFunded, setIsProjectFunded] = useState(null);
   const [isTeam, setIsTeam] = useState(null);
   const [isFinish, setIsFinish] = useState(false);
+
+  const [projectTitle, setProjectTitle] = useState('');
+  const [selectedOptionOrg, setSelectedOptionOrg] = useState('');
+  const [dateStart, setDateStart] = useState('');
+  const [dateEnd, setDateEnd] = useState('');
+  const [projectData, setProjectData] = useState([]);
 
   function handleStatus(e) {
     setActiveStatus(e.target.value);
@@ -26,6 +36,28 @@ const NewProject = () => {
     setIsProjectFunded(e.target.value === 'Yes');
     setIsFinish(true);
   };
+  
+  const handleDateStartChange = (newDate) => {
+    setDateStart(newDate);
+  };
+
+  const handleDateEndChange = (newDate) => {
+    setDateEnd(newDate);
+  };
+
+  const handleProjectData = () => {
+    console.log(activeStatus);
+    console.log(activeSubStatus);
+    console.log(isProjectFunded);
+    console.log(isTeam);
+    console.log(projectTitle);
+    console.log(selectedOptionOrg);
+    console.log(dateStart)
+    console.log(dateEnd)
+
+    const results = [];
+    setProjectData(results);
+  };
 
   return (
     <>
@@ -37,36 +69,27 @@ const NewProject = () => {
         <CCardBody>
           <CCardSubtitle className="mb-3 text-body-secondary">Complete la siguiente informacion</CCardSubtitle>
           <CForm>
-            <CFormInput className='mb-3'
-              type="input"
-              id="title"
-              label="Título del proyecto"
-              placeholder="Título"
+            <CFormInput className='mb-3' type="input" id="title" label="Título del proyecto" placeholder="Título" 
+                        value={projectTitle} onChange={(e) => setProjectTitle(e.target.value)}
             />
           </CForm>
-          <CFormSelect className='mb-3' label="Unidad organizacional"
-            options={[
-              'Selecciona',
-              { label: 'One', value: '1' },
-              { label: 'Two', value: '2' },
-              { label: 'Three', value: '3', disabled: true }
-            ]}
-          />
+          <CFormSelect  className='mb-3' aria-label="orgunit" label="Unidad organizacional" 
+                        value={selectedOptionOrg} onChange={(e) => setSelectedOptionOrg(e.target.value)}>
+            <option value="">Seleccione una opción</option>
+            {NPOrg.map((option) => (
+              <option  key={option.value} value={option.label}>
+                {option.label}
+              </option>
+            ))}
+          </CFormSelect>
           <CRow className="align-items-end">
             <CCol>
-              <CFormInput className='mb-3'
-                type="input"
-                id="title"
-                label="Periodo de ejecución estimado"
-                placeholder="Fecha de inicio (DD-MM-AAAA)"
-              />
+              <DateInput label='Periodo de ejecución estimado' placeholder='Fecha de inicio (DD-MM-AAAA)' 
+                          onChange={handleDateStartChange}/>
             </CCol>
             <CCol>
-              <CFormInput className='mb-3'
-                type="input"
-                id="title"
-                placeholder="Fecha de fin (DD-MM-AAAA)"
-              />
+              <DateInput placeholder='Fecha de fin (DD-MM-AAAA)' 
+                          onChange={handleDateEndChange}/>
             </CCol>
           </CRow>
           
@@ -74,7 +97,9 @@ const NewProject = () => {
           <div className="mt-2">
             {StatusProject.map((statusItems, indexH) => {
               return (
-                <CFormCheck key={indexH} button={{ color: 'primary', variant: 'outline' }} type="radio" name="options-outlined-status" id={statusItems.name} label={statusItems.name} value={statusItems.id} onChange={handleStatus} checked={activeStatus === statusItems.id}/>
+                <CFormCheck key={indexH} button={{ color: 'primary', variant: 'outline' }} type="radio" 
+                            name="options-outlined-status" id={statusItems.name} label={statusItems.name} 
+                            value={statusItems.id} onChange={handleStatus} checked={activeStatus === statusItems.id}/>
               )
             })}
           </div>
@@ -84,15 +109,19 @@ const NewProject = () => {
             (
               <div className="mt-2">
                   {StatusProject.find((status) => status.id === activeStatus).substatus.map((substatus) => (
-                    <CFormCheck key={substatus.id} button={{ color: 'primary', variant: 'outline' }} type="radio" name="options-outlined-substatus" id={substatus.name} label={substatus.name} value={substatus.id} onChange={handleSubStatus} checked={activeSubStatus === substatus.id} />
+                    <CFormCheck key={substatus.id} button={{ color: 'primary', variant: 'outline' }} type="radio" 
+                                name="options-outlined-substatus" id={substatus.name} label={substatus.name} 
+                                value={substatus.id} onChange={handleSubStatus} checked={activeSubStatus === substatus.id} />
                   ))}
               </div>
             )
           }
 
           <div className='text-body-secundary mt-3 mb-1'>¿El proyecto tiene un grupo de investigadores a cargo?</div>
-          <CFormCheck inline type="radio" name="inlineRadioOptions1" id="cbTeamYes" value="Yes" label="Si" onChange={handleRadioChangeTeam} checked={isTeam === true}/>
-          <CFormCheck inline type="radio" name="inlineRadioOptions1" id="cbTeamNo" value="No" label="No" onChange={handleRadioChangeTeam} checked={isTeam === false}/>
+            <CFormCheck inline type="radio" name="inlineRadioOptions1" id="cbTeamYes" value="Yes" label="Si" 
+                        onChange={handleRadioChangeTeam} checked={isTeam === true}/>
+            <CFormCheck inline type="radio" name="inlineRadioOptions1" id="cbTeamNo" value="No" label="No" 
+                        onChange={handleRadioChangeTeam} checked={isTeam === false}/>
           
           {
             (isTeam) && 
@@ -111,8 +140,10 @@ const NewProject = () => {
 
           {/* NO SE SI ES NECESARIO */}
           <div className='text-body-secundary mt-3 mb-1'>¿El proyecto se encuentra financiado?</div>
-          <CFormCheck inline type="radio" name="inlineRadioOptions2" id="cbRProjectYes" value="Yes" label="Si" onChange={handleRadioChangeFunding} checked={isProjectFunded === true}/>
-          <CFormCheck inline type="radio" name="inlineRadioOptions2" id="cbRProjectNo" value="No" label="No" onChange={handleRadioChangeFunding} checked={isProjectFunded === false}/>
+          <CFormCheck inline type="radio" name="inlineRadioOptions2" id="cbRProjectYes" value="Yes" label="Si" 
+                      onChange={handleRadioChangeFunding} checked={isProjectFunded === true}/>
+          <CFormCheck inline type="radio" name="inlineRadioOptions2" id="cbRProjectNo" value="No" label="No" 
+                      onChange={handleRadioChangeFunding} checked={isProjectFunded === false}/>
 
         </CCardBody>
       </CCard>
@@ -121,7 +152,7 @@ const NewProject = () => {
       {
         isProjectFunded &&
         (
-          <TabsSP /*id del autor*/ typeTab={"funding"} />
+          <TabsSP /*id del autor*/  SPID={elementID} typeTab={"funding"} />
         )
       }
 
@@ -130,8 +161,8 @@ const NewProject = () => {
         isFinish && 
         (
           <div className="d-grid gap-2 d-md-flex justify-content-md-end mt-3 mb-4">
-            <CButton color="primary" variant="outline" className="me-md-2">Cancelar</CButton>
-            <CButton color="primary" href="#" disabled={isProjectFunded}>Guardar</CButton>
+            <CButton color="primary" variant="outline" className="me-md-2" onClick={handleProjectData}>Cancelar</CButton>
+            <CButton color="primary" disabled={isProjectFunded}>Guardar</CButton>
           </div>
         )
       }
