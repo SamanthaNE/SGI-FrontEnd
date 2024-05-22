@@ -1,8 +1,8 @@
 import { CFormFeedback, CFormInput } from '@coreui/react';
 import React, { useEffect, useState } from 'react'
 
-const DateInput = ({label = '', placeholder = '', onChange}) => {
-  const [date, setDate] = useState('');
+const DateInput = ({label = '', placeholder = '', onChange, value}) => {
+  const [date, setDate] = useState(value);
   const [error, setError] = useState('');
 
   const handleDateChange = (e) => {

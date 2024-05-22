@@ -14,12 +14,8 @@ const InfoPublicationDetail = ({data, validation = true}) => {
                 <div className="mb-2 text-body">{data.abstract ?? "-"}</div>
               </CRow>
               <CRow>
-                <CCol sm={3} className="h6">Tipo de documento</CCol>
-                <CCol className="text-body">{data.typeD ?? "-"}</CCol>
-              </CRow>
-              <CRow>
-                <CCol sm={3} className="h6">Tipo de fuente</CCol>
-                <CCol className="text-body">{data.typeS ?? "-"}</CCol>
+                <CCol sm={3} className="h6">Tipo de recurso</CCol>
+                <CCol className="text-body">{data.resourcetype ?? "-"}</CCol>
               </CRow>
               <CRow>
                 <CCol sm={3} className="h6">Nombre de la revista</CCol>

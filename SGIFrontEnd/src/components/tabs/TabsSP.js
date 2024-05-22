@@ -8,7 +8,7 @@ import { HeadersProject } from '../../data_files/HeadersProject'
 {/* API - ID DEL AUTHOR PARA LLAMAR A TODOS SUS PROYECTOS, PATENTES, PRODUCTOS */}
 {/* API - PARA LLAMAR A TODAS LOS FINANCIAMIENTOS */}
 
-const TabsSP = ({SPID, typeTab}) => {
+const TabsSP = ({SPID, typeTab, data}) => {
   const [activeKey, setActiveKey] = useState(1)
 
   const navigate = useNavigate()
@@ -64,7 +64,7 @@ const TabsSP = ({SPID, typeTab}) => {
             (
               <CTabContent>
                 <CTabPane role="tabpanel" aria-labelledby="project-tab" visible={activeKey === 1}>
-                  <InfoSP data={[]} headers={HeadersProject} detail={false}/>
+                  <InfoSP data={data} headers={HeadersProject} detail={false}/>
                   <div className="d-grid gap-2 d-md-flex justify-content-md-end mt-2">
                     <CButton color="primary" variant="outline" onClick={handleNavigationProject}>Buscar</CButton>
                   </div>
@@ -81,7 +81,7 @@ const TabsSP = ({SPID, typeTab}) => {
             (
               <CTabContent>
                 <CTabPane role="tabpanel" aria-labelledby="project-tab" visible={activeKey === 1}>
-                  <InfoSP data={[]} headers={HeadersFunding} detail={false}/>
+                  <InfoSP data={data} headers={HeadersFunding} detail={false}/>
                   <div className="d-grid gap-2 d-md-flex justify-content-md-end mt-2">
                     <CButton color="primary" variant="outline" onClick={handleNavigationFunding}>Buscar</CButton>
                   </div>

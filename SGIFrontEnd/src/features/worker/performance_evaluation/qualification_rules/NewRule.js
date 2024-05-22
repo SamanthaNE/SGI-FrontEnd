@@ -5,17 +5,18 @@ import CriteriaRuleSelector from '../../../../components/selectors/CriteriaRuleS
 import MandatoryRuleCriteria from '../../../../components/selectors/MandatoryRuleCriteria';
 import CIcon from '@coreui/icons-react';
 import { cilPlus } from '@coreui/icons';
+import RuleFactor from '../../../../components/selectors/RuleFactor';
+import RuleFactorSelector from '../../../../components/selectors/RuleFactorSelector';
 
 const NewRule = () => {
   const [ruleName, setRuleName] = useState('');
   const [selectedOptionCategory, setSelectedOptionCategory] = useState('');
   const [selectedOptionSubcategory, setSelectedOptionSubcategory] = useState('');
   const [selectedOptionSPType, setSelectedOptionSPType] = useState('');
-  const [selectedOptionSPTypeAttribute, setSelectedOptionSPTypeAttribute] = useState('');
-  const [selectedOptionSPTypeCondition, setSelectedOptionSPTypeCondition] = useState('');
-  const [selectedOptionSPTypeValue, setSelectedOptionSPTypeValue] = useState('');
-
+  
   const [ruleData, setRuleData] = useState([]);
+  const [ruleCriteria, setRuleCriteria] = useState([]);
+  const [ruleFactor, setRuleFactor] = useState([]);
 
   const handleRuleData = () => {
     console.log(ruleName);
@@ -24,6 +25,36 @@ const NewRule = () => {
     const results = [];
     setRuleData(results);
   };
+
+  const handleNewCriteria = () => {
+    setRuleCriteria([...ruleCriteria, {}])
+  }
+
+  const handleCriteriaChange = (index, value) => {
+    const newCriteria = [...ruleCriteria]
+    newCriteria[index] = value
+    setRuleCriteria(newCriteria)
+  }
+
+  const handleDeleteCriteria = (index) => {
+    console.log(index)
+    setRuleCriteria((prevCriteriaRules) => prevCriteriaRules.filter((_, i) => i !== index))
+  }
+
+  const handleNewFactor = () => {
+    setRuleFactor([...ruleFactor, {}])
+  }
+
+  const handleFactorChange = (index, value) => {
+    const newFactor = [...ruleFactor]
+    newFactor[index] = value
+    setRuleFactor(newFactor)
+  }
+
+  const handleDeleteFactor = (index) => {
+    console.log(index)
+    setRuleFactor((prevRulesFactor) => prevRulesFactor.filter((_, i) => i !== index))
+  }
 
   return (
     <>
@@ -86,50 +117,40 @@ const NewRule = () => {
             </CCol>
           </CRow>
 
-          <CRow className="d-flex align-items-center mb-3">
-            <CCol sm={1}>Y</CCol>
-            <CCol>
-              <CFormSelect aria-label="type"
-                            value={selectedOptionSPTypeAttribute} onChange={(e) => setSelectedOptionSPTypeAttribute(e.target.value)}>
-                <option value="">Atributo</option>
-                {SPTypes.map((option, indexSPT) => (
-                  <option key={option.id} value={option.id} disabled={indexSPT > 1 ? true : false}>
-                    {option.type}
-                  </option>
-                ))}
-              </CFormSelect>
-            </CCol>
-            <CCol>
-              <CFormSelect aria-label="condition"
-                            value={selectedOptionSPTypeCondition} onChange={(e) => setSelectedOptionSPTypeCondition(e.target.value)}>
-                <option value="">Condición</option>
-                {SPRuleCondition.map((option) => (
-                  <option key={option.id} value={option.id}>
-                    {option.type}
-                  </option>
-                ))}
-              </CFormSelect>
-            </CCol>
-            <CCol>
-              <CFormSelect aria-label="criteria-value"
-                            value={selectedOptionSPTypeValue} onChange={(e) => setSelectedOptionSPTypeValue(e.target.value)}>
-                <option value="">Valor</option>
-                {SPTypes.map((option, indexSPT) => (
-                  <option key={option.id} value={option.id} disabled={indexSPT > 1 ? true : false}>
-                    {option.type}
-                  </option>
-                ))}
-              </CFormSelect>
-            </CCol>
-          </CRow>
+          <MandatoryRuleCriteria />
+
+          {ruleCriteria.map((_, index) => (
+            <CriteriaRuleSelector
+              key={index}
+              index={index}
+              handleChange={handleCriteriaChange}
+              onDelete={handleDeleteCriteria}
+            />
+          ))}
 
           <CCol className="d-grid gap-2 d-md-flex justify-content-md-center mt-3 mb-4">
-            <CButton color="primary" variant="outline">
+            <CButton color="primary" variant="outline" onClick={handleNewCriteria}>
               <CIcon icon={cilPlus} /> Agregar criterio
             </CButton>
           </CCol>
 
-          <CriteriaRuleSelector />
+          <RuleFactor />
+
+          {ruleFactor.map((_, index) => (
+            <RuleFactorSelector
+              key={index}
+              index={index}
+              handleChange={handleFactorChange}
+              onDelete={handleDeleteFactor}
+            />
+          ))}
+
+          <CCol className="d-grid gap-2 d-md-flex justify-content-md-center mt-3 mb-4">
+            <CButton color="primary" variant="outline" onClick={handleNewFactor}>
+              <CIcon icon={cilPlus} /> Agregar factor
+            </CButton>
+          </CCol>
+
         </CCardBody>
       </CCard>
 

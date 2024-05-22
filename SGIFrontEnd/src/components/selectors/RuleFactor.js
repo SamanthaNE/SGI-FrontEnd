@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import { CButton, CCol, CFormCheck, CFormInput, CFormSelect, CRow } from '@coreui/react'
+import { CCol, CFormInput, CFormSelect, CRow, CTooltip } from '@coreui/react'
 import { SPRuleCondition, SPTypes } from '../../data_files/HardData';
 import CIcon from '@coreui/icons-react';
-import { cilTrash } from '@coreui/icons';
+import { cilAsteriskCircle } from '@coreui/icons';
 
-const CriteriaRuleSelector = ({ index, handleChange, onDelete }) => {
+const RuleFactor = () => {
   const [selectedOptionSPTypeAttribute, setSelectedOptionSPTypeAttribute] = useState('');
   const [selectedOptionSPTypeCondition, setSelectedOptionSPTypeCondition] = useState('');
   const [selectedOptionSPTypeValue, setSelectedOptionSPTypeValue] = useState('');
@@ -13,12 +13,6 @@ const CriteriaRuleSelector = ({ index, handleChange, onDelete }) => {
   const [isInputVisible, setIsInputVisible] = useState(false)
   const [minValue, setMinValue] = useState('');
   const [maxValue, setMaxValue] = useState('');
-
-  const [activeStatus, setActiveStatus] = useState(null)
-
-  function handleStatus(e) {
-    setActiveStatus(e.target.value);
-  }
 
   const handleConditionChange = (e) => {
     const value = e.target.value
@@ -31,16 +25,10 @@ const CriteriaRuleSelector = ({ index, handleChange, onDelete }) => {
     }
   }
 
-
   return (
     <>
       <CRow className="d-flex align-items-center mb-3">
-        <CCol sm={1}>
-          <CFormCheck button={{ color: 'primary', variant: 'outline' }} type="radio" name={`options-outlined-status-${index}`}  
-                      id={`Y-${index}`} label={'Y'} value={"AND"} onChange={handleStatus} checked={activeStatus === "AND"}/>
-          <CFormCheck button={{ color: 'primary', variant: 'outline' }} type="radio" name={`options-outlined-status-${index}`}
-                       id={`O-${index}`}  label={'O'} value={"OR"} onChange={handleStatus} checked={activeStatus === "OR"}/>
-        </CCol>
+        <CCol sm={1}>Factor</CCol>
         <CCol>
           <CFormSelect aria-label="type"
                         value={selectedOptionSPTypeAttribute} onChange={(e) => setSelectedOptionSPTypeAttribute(e.target.value)}>
@@ -96,21 +84,22 @@ const CriteriaRuleSelector = ({ index, handleChange, onDelete }) => {
           )
         }
         </CCol>
-
         <CCol>
-          <CFormInput type="input" id="score" placeholder="Puntaje asignado" 
+          <CFormInput type="input" id="score" placeholder="Factor de multiplicación" 
                       value={score} onChange={(e) => setScore(e.target.value.replace(/[^0-9]/g, ''))}
           />
         </CCol>
-
         <CCol sm={1} className="d-flex justify-content-center">
-          <CButton color="danger" variant="outline" onClick={() => onDelete(index)}>
-            <CIcon icon={cilTrash} />
-          </CButton>
+          <CTooltip
+            content="Factor aplicable a todos los criterios establecidos"
+            placement="right"
+          >
+            <CIcon icon={cilAsteriskCircle} />
+          </CTooltip>
         </CCol>
       </CRow>
     </>
   )
 }
 
-export default CriteriaRuleSelector
+export default RuleFactor

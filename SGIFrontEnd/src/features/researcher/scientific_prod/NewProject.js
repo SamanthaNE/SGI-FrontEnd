@@ -2,47 +2,81 @@ import { CButton, CCard, CCardBody, CCardSubtitle, CCol, CForm, CFormCheck, CFor
 import React, { useState } from 'react'
 import StatusProject from '../../../data_files/StatusProject'
 import TabsSP from '../../../components/tabs/TabsSP'
-import { useParams } from 'react-router-dom'
-import { NPOrg } from '../../../data_files/FiltersData'
+import { useNavigate, useParams } from 'react-router-dom'
+import { NPOrg, ProjectTeamRoles } from '../../../data_files/FiltersData'
 import DateInput from '../../../components/dateInput/DateInput'
+import { useDispatch, useSelector } from 'react-redux'
+
+import {
+  setProjectTitle,
+  setSelectedOptionOrg,
+  setDateStart,
+  setDateEnd,
+  setActiveStatus,
+  setActiveSubStatus,
+  setIsProjectFunded,
+  setIsTeam
+} from '../../../redux/slices/curationSlice'
+
 
 const NewProject = () => {
-  const { elementID } = useParams() 
-  const [activeStatus, setActiveStatus] = useState(null)
-  const [activeSubStatus, setActiveSubStatus] = useState(null)
-  const [isProjectFunded, setIsProjectFunded] = useState(null);
-  const [isTeam, setIsTeam] = useState(null);
-  const [isFinish, setIsFinish] = useState(false);
-
+  const { elementID } = useParams()
+  const navigate = useNavigate()
+  /*
   const [projectTitle, setProjectTitle] = useState('');
   const [selectedOptionOrg, setSelectedOptionOrg] = useState('');
   const [dateStart, setDateStart] = useState('');
   const [dateEnd, setDateEnd] = useState('');
+  const [activeStatus, setActiveStatus] = useState(null)
+  const [activeSubStatus, setActiveSubStatus] = useState(null)
+  const [isProjectFunded, setIsProjectFunded] = useState(null);
+  const [isTeam, setIsTeam] = useState(null);
+  */
+
+  const [isFinish, setIsFinish] = useState(false);
+
   const [projectData, setProjectData] = useState([]);
 
-  function handleStatus(e) {
-    setActiveStatus(e.target.value);
+  const dispatch = useDispatch()
+
+  const { 
+    projectTitle,
+    selectedOptionOrg,
+    dateStart,
+    dateEnd, 
+    activeStatus,
+    activeSubStatus,
+    isProjectFunded,
+    isTeam
+  } = useSelector((state) => state.curation.newProject)
+
+  const selectedFundings = useSelector((state) => state.curation.selectedFundings)
+
+  const handleStatus = (e) => {
+    dispatch(setActiveStatus(e.target.value))
   }
 
-  function handleSubStatus(e) {
-    setActiveSubStatus(e.target.value);
+  const handleSubStatus = (e) => {
+    dispatch(setActiveSubStatus(e.target.value))
   }
 
-  function handleRadioChangeTeam(e) {
-    setIsTeam(e.target.value === 'Yes');
+  const handleRadioChangeTeam = (e) => {
+    dispatch(setIsTeam(e.target.value === 'Yes'))
   }
 
-  function handleRadioChangeFunding (e) {
-    setIsProjectFunded(e.target.value === 'Yes');
+  const handleRadioChangeFunding = (e) => {
+    dispatch(setIsProjectFunded(e.target.value === 'Yes'))
     setIsFinish(true);
   };
   
   const handleDateStartChange = (newDate) => {
-    setDateStart(newDate);
+    console.log(newDate)
+    dispatch(setDateStart(newDate))
   };
 
   const handleDateEndChange = (newDate) => {
-    setDateEnd(newDate);
+    console.log(newDate)
+    dispatch(setDateEnd(newDate))
   };
 
   const handleProjectData = () => {
@@ -57,6 +91,8 @@ const NewProject = () => {
 
     const results = [];
     setProjectData(results);
+
+    /* ACA DEBE GUARDA LA INFO EN LA DB Y REDIRECCIONAR A LA PAGINA ANTERIOR */
   };
 
   return (
@@ -70,11 +106,11 @@ const NewProject = () => {
           <CCardSubtitle className="mb-3 text-body-secondary">Complete la siguiente informacion</CCardSubtitle>
           <CForm>
             <CFormInput className='mb-3' type="input" id="title" label="Título del proyecto" placeholder="Título" 
-                        value={projectTitle} onChange={(e) => setProjectTitle(e.target.value)}
+                        value={projectTitle} onChange={(e) => dispatch(setProjectTitle(e.target.value))}
             />
           </CForm>
           <CFormSelect  className='mb-3' aria-label="orgunit" label="Unidad organizacional" 
-                        value={selectedOptionOrg} onChange={(e) => setSelectedOptionOrg(e.target.value)}>
+                        value={selectedOptionOrg} onChange={(e) => dispatch(setSelectedOptionOrg(e.target.value))}>
             <option value="">Seleccione una opción</option>
             {NPOrg.map((option) => (
               <option  key={option.value} value={option.label}>
@@ -85,11 +121,10 @@ const NewProject = () => {
           <CRow className="align-items-end">
             <CCol>
               <DateInput label='Periodo de ejecución estimado' placeholder='Fecha de inicio (DD-MM-AAAA)' 
-                          onChange={handleDateStartChange}/>
+                          onChange={handleDateStartChange} value={dateStart}/>
             </CCol>
             <CCol>
-              <DateInput placeholder='Fecha de fin (DD-MM-AAAA)' 
-                          onChange={handleDateEndChange}/>
+              <DateInput placeholder='Fecha de fin (DD-MM-AAAA)' onChange={handleDateEndChange} value={dateEnd}/>
             </CCol>
           </CRow>
           
@@ -117,11 +152,20 @@ const NewProject = () => {
             )
           }
 
-          <div className='text-body-secundary mt-3 mb-1'>¿El proyecto tiene un grupo de investigadores a cargo?</div>
+          <div className='text-body-secundary mt-3 mb-1'>Grupo de investigadores a cargo</div>
             <CFormCheck inline type="radio" name="inlineRadioOptions1" id="cbTeamYes" value="Yes" label="Si" 
                         onChange={handleRadioChangeTeam} checked={isTeam === true}/>
             <CFormCheck inline type="radio" name="inlineRadioOptions1" id="cbTeamNo" value="No" label="No" 
                         onChange={handleRadioChangeTeam} checked={isTeam === false}/>
+            <CFormSelect  className='mb-3' aria-label="orgunit"
+                          /*value={selectedOptionRole} onChange={(e) => dispatch(setSelectedOptionRole(e.target.value))}*/>
+              <option value="">Seleccione una opción</option>
+              {ProjectTeamRoles.map((option) => (
+                <option  key={option.value} value={option.label}>
+                  {option.label}
+                </option>
+              ))}
+            </CFormSelect>
           
           {
             (isTeam) && 
@@ -152,7 +196,7 @@ const NewProject = () => {
       {
         isProjectFunded &&
         (
-          <TabsSP /*id del autor*/  SPID={elementID} typeTab={"funding"} />
+          <TabsSP /*id del autor*/  SPID={elementID} typeTab={"funding"} data={selectedFundings} />
         )
       }
 
@@ -161,8 +205,8 @@ const NewProject = () => {
         isFinish && 
         (
           <div className="d-grid gap-2 d-md-flex justify-content-md-end mt-3 mb-4">
-            <CButton color="primary" variant="outline" className="me-md-2" onClick={handleProjectData}>Cancelar</CButton>
-            <CButton color="primary" disabled={isProjectFunded}>Guardar</CButton>
+            <CButton color="primary" variant="outline" className="me-md-2" onClick={() =>navigate(-1)}>Cancelar</CButton>
+            <CButton color="primary" disabled={isProjectFunded} onClick={handleProjectData}>Guardar</CButton>
           </div>
         )
       }

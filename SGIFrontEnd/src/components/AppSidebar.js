@@ -1,6 +1,6 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { UserContext } from '../context/UserContext';
+import { set } from '../redux/slices/appSlice'
 
 import {
   CCloseButton,
@@ -21,8 +21,8 @@ import { _navResearcher, _navWorker } from '../_nav'
 
 const AppSidebar = () => {
   const dispatch = useDispatch()
-  const unfoldable = useSelector((state) => state.sidebarUnfoldable)
-  const sidebarShow = useSelector((state) => state.sidebarShow)
+  const unfoldable = useSelector((state) => state.app.sidebarUnfoldable)
+  const sidebarShow = useSelector((state) => state.app.sidebarShow)
 
   /* PROVICIONAL */
   const storedUserData = sessionStorage.getItem('user');
@@ -34,14 +34,6 @@ const AppSidebar = () => {
   else{
     return null
   }
-  
-/*
-  const { user } = useContext(UserContext);
-  console.log(user)
-  if (!user) {
-    return null; // No renderiza nada si no hay usuario logueado
-  }
-*/
   /* PROVICIONAL */
 
   return (
@@ -52,7 +44,7 @@ const AppSidebar = () => {
       unfoldable={unfoldable}
       visible={sidebarShow}
       onVisibleChange={(visible) => {
-        dispatch({ type: 'set', sidebarShow: visible })
+        dispatch(set({ sidebarShow: visible }));
       }}
     >
       <CSidebarHeader className="border-bottom">
@@ -71,7 +63,7 @@ const AppSidebar = () => {
 
       <CSidebarFooter className="border-top d-none d-lg-flex">
         <CSidebarToggler
-          onClick={() => dispatch({ type: 'set', sidebarUnfoldable: !unfoldable })}
+          onClick={() => dispatch(set({ sidebarUnfoldable: !unfoldable }))}
         />
       </CSidebarFooter>
     </CSidebar>

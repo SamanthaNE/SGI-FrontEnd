@@ -10,6 +10,13 @@ export const SPFTypeS = [
   { label: 'Conference Proceeding', value: '3'},
 ]
 
+export const PFResourceType = [
+  { label: 'Artículo de investigación', value: '1' },
+  { label: 'Actas de conferencia', value: '2' },
+  { label: 'Comunicación de congreso', value: '3'},
+  { label: 'Capítulo de libro', value: '4'},
+]
+
 export const SPFGroup = [
   { label: 'HCI-DUXAIT', value: '1' },
   { label: 'UMetSoft', value: '2' },
@@ -27,6 +34,12 @@ export const PFStatus = [
 export const PFFunding = [
   { label: 'Fondos propios', value: '1' },
   { label: 'Otras modalidades de financiamiento', value: '2' },
+  { label: 'Premio o reconocimiento', value: '3' },
+  { label: 'Convocatoria', value: '4' },
+  { label: 'Donación', value: '5' },
+  { label: 'Subvención', value: '6' },
+  { label: 'Programa de Financiamiento', value: '7' },
+  { label: 'Financiamiento por licitación', value: '8' },
 ]
 
 export const FFOrg = [
@@ -54,4 +67,10 @@ export const Category = [
   { label: 'Categoria C', value: '3' },
   { label: 'Categoria D', value: '4' },
   { label: 'No evaluado', value: '5' },
+]
+
+export const ProjectTeamRoles = [
+  { label: 'INVESTIGADOR_PRINCIPAL', value: '1' },
+  { label: 'CO_INVESTIGADOR', value: '2' },
+  { label: 'ASISTENTE_INVESTIGACION ', value: '3' },
 ]

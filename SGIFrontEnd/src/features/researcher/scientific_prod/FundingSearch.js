@@ -5,14 +5,25 @@ import InfoSPCheck from '../../../components/cards/InfoSPCheck'
 import { useNavigate, useParams } from 'react-router-dom'
 import HeadersFunding from '../../../data_files/HeadersFunding'
 import { dataFundingSearch } from '../../../data_files/HardData'
+import { useDispatch } from 'react-redux'
+import { setSelectedFundings } from '../../../redux/slices/curationSlice'
 
 const FundingSearch = () => {
   const { elementID } = useParams()
-  const [count, setCount] = useState(0);
   const navigate = useNavigate()
+  const [selectedFundingsLocal, setSelectedFundingsLocal] = useState([]);
 
-  function handleSelection(dataCC) {
-    setCount(dataCC.length)
+  /* REDUX */
+  const dispatch = useDispatch();
+
+  const handleSelection = (dataCC) => {
+    console.log(dataCC)
+    setSelectedFundingsLocal(dataCC)
+  }
+
+  const handleLinkFunding = () => {
+    dispatch(setSelectedFundings(selectedFundingsLocal));
+    navigate(-1)
   }
 
   const handleNavigation = () => {
@@ -31,11 +42,11 @@ const FundingSearch = () => {
         <CCol>
           <div className="d-grid gap-2 d-md-block mb-3">
             <CButton color="primary" className="me-md-2" onClick={handleNavigation}>Agregar</CButton>
-            <CButton color="primary" variant="outline" disabled={count > 0 ? false : true} /*onClick={}*/>Vincular</CButton>
+            <CButton color="primary" variant="outline" disabled={selectedFundingsLocal.length === 0} onClick={handleLinkFunding}>Vincular</CButton>
           </div>
         </CCol>
         <CCol className='text-end'>
-            <div className='text-body-secondary'>{count} elemento(s) seleccionado(s)</div>
+            <div className='text-body-secondary'>{selectedFundingsLocal.length} elemento(s) seleccionado(s)</div>
         </CCol>
       </CRow>
         

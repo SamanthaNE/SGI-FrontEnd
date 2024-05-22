@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import InfoSP from '../../../components/cards/InfoSP';
 import { HeadersGroupsEval, HeadersSPEval } from '../../../data_files/HeadersSP';
 import { HeadersProjectEval } from '../../../data_files/HeadersProject';
-import { dataGroups, dataProjectSearch, dataScopusPublication } from '../../../data_files/HardData';
+import { dataGroups, dataProjectSearch, dataPublications, dataScopusPublication } from '../../../data_files/HardData';
 
 const PerformanceEval = () => {
   const [selectedCard, setSelectedCard] = useState('publications');
@@ -49,10 +49,10 @@ const PerformanceEval = () => {
       </CCardGroup>
 
       {/* HEADER */}
-      <div className='h5'>Resultados ({selectedCard === 'publications' ? (dataScopusPublication.length) : (selectedCard === 'projects' ? (dataProjectSearch.length) : (dataGroups.length))}):</div>
+      <div className='h5'>Resultados ({selectedCard === 'publications' ? (dataPublications.length) : (selectedCard === 'projects' ? (dataProjectSearch.length) : (dataGroups.length))}):</div>
 
       <InfoSP 
-        data={selectedCard === 'publications' ? (dataScopusPublication) : (selectedCard === 'projects' ? (dataProjectSearch) : (dataGroups))} 
+        data={selectedCard === 'publications' ? (dataPublications) : (selectedCard === 'projects' ? (dataProjectSearch) : (dataGroups))} 
         headers={selectedCard === 'publications' ? (HeadersSPEval) : (selectedCard === 'projects' ? (HeadersProjectEval) : (HeadersGroupsEval))}
         btnnav={selectedCard === 'publications' ? ("publicaciones/detalle") : (selectedCard === 'projects' ? ("proyectos/detalle") : ( "grupos/detalle"))} 
         btnmore={selectedCard === 'publications' ? ("publicaciones") : (selectedCard === 'projects' ? ("proyectos") : (""))}

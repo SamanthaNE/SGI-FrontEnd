@@ -1,11 +1,29 @@
 import React, { useState } from 'react'
-import { CCol, CFormSelect, CRow } from '@coreui/react'
+import { CCol, CFormInput, CFormSelect, CRow, CTooltip } from '@coreui/react'
 import { SPRuleCondition, SPTypes } from '../../data_files/HardData';
+import CIcon from '@coreui/icons-react';
+import { cilAsteriskCircle } from '@coreui/icons';
 
 const MandatoryRuleCriteria = () => {
   const [selectedOptionSPTypeAttribute, setSelectedOptionSPTypeAttribute] = useState('');
   const [selectedOptionSPTypeCondition, setSelectedOptionSPTypeCondition] = useState('');
   const [selectedOptionSPTypeValue, setSelectedOptionSPTypeValue] = useState('');
+  const [score, setScore] = useState('');
+
+  const [isInputVisible, setIsInputVisible] = useState(false)
+  const [minValue, setMinValue] = useState('');
+  const [maxValue, setMaxValue] = useState('');
+
+  const handleConditionChange = (e) => {
+    const value = e.target.value
+    setSelectedOptionSPTypeCondition(value)
+
+    if (value === '5') {
+      setIsInputVisible(true)
+    } else {
+      setIsInputVisible(false)
+    }
+  }
 
   return (
     <>
@@ -24,7 +42,7 @@ const MandatoryRuleCriteria = () => {
         </CCol>
         <CCol>
           <CFormSelect aria-label="condition"
-                        value={selectedOptionSPTypeCondition} onChange={(e) => setSelectedOptionSPTypeCondition(e.target.value)}>
+                        value={selectedOptionSPTypeCondition} onChange={handleConditionChange}>
             <option value="">Condición</option>
             {SPRuleCondition.map((option) => (
               <option key={option.id} value={option.id}>
@@ -34,15 +52,50 @@ const MandatoryRuleCriteria = () => {
           </CFormSelect>
         </CCol>
         <CCol>
-          <CFormSelect aria-label="criteria-value"
+        {
+          isInputVisible ? 
+          (
+            <>
+              <CFormInput
+                aria-label="criteria-value"
+                placeholder="Mínimo valor"
+                value={minValue}
+                onChange={(e) => setMinValue(e.target.value)}
+              />
+              <CFormInput
+                aria-label="criteria-value"
+                placeholder="Máximo valor"
+                value={maxValue}
+                onChange={(e) => setMaxValue(e.target.value)}
+              />
+            </>
+          )
+          :
+          (
+            <CFormSelect aria-label="criteria-value"
                         value={selectedOptionSPTypeValue} onChange={(e) => setSelectedOptionSPTypeValue(e.target.value)}>
-            <option value="">Valor</option>
-            {SPTypes.map((option, indexSPT) => (
-              <option key={option.id} value={option.id} disabled={indexSPT > 1 ? true : false}>
-                {option.type}
-              </option>
-            ))}
-          </CFormSelect>
+              <option value="">Valor</option>
+              {SPTypes.map((option, indexSPT) => (
+                <option key={option.id} value={option.id} disabled={indexSPT > 1 ? true : false}>
+                  {option.type}
+                </option>
+              ))}
+            </CFormSelect>
+          )
+        }
+        </CCol>
+        <CCol>
+          <CFormInput type="input" id="score" placeholder="Puntaje asignado" 
+                      value={score} onChange={(e) => setScore(e.target.value.replace(/[^0-9]/g, ''))}
+          />
+        </CCol>
+        <CCol sm={1} className="d-flex justify-content-center">
+          <CTooltip
+            content="Criterio obligatorio inicial"
+            placement="right"
+          >
+            <CIcon icon={cilAsteriskCircle} />
+          </CTooltip>
         </CCol>
       </CRow>
     </>

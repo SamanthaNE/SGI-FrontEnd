@@ -26,9 +26,38 @@ export const dataScopusPublication = [
   },
 ]
 
+export const dataPublications = [
+  {
+    id: 1,
+    title: 'Urban planning as a pedagogical experience in intermediate cities in northern Peru, 2011-2016',
+    name: 'Journal of Urban Affairs',
+    author: [
+      { id: 1, name: 'Vilela M.'},
+      { id: 2, name: 'Ramirez E.' },
+    ],
+    resourcetype: 'Artículo de investigación',
+    group: [],
+    year: '2022',
+  },
+  {
+    id: 2,
+    title: 'A stratified bootstrapping approach to assessing the success of TQM implementation in Peruvian companies',
+    name: 'Total Quality Managament and Business Excellence',
+    author: [
+      {id: 1, name: 'Benzaquen J.'},
+      {id: 2, name: 'Charles V.'},
+      {id: 3, name: 'Ramirez E.'},
+    ],
+    resourcetype: 'Artículo de investigación',
+    group: [],
+    year: '2022',
+  },
+]
+
+
 //---------------------------------------------//
 
-export const dataSPDataCuration = [
+export const dataSPDataCuration = 
   {
     id: 1,
     title: 'A stratified bootstrapping approach to assessing the success of TQM implementation in Peruvian companies',
@@ -41,8 +70,8 @@ export const dataSPDataCuration = [
     typeD: 'Article',
     typeS: 'Journal',
     year: '2022',
-  },
-]
+  }
+
 
 export const rgroupsSPDataCuration = [
   {
@@ -174,8 +203,7 @@ export const dataSelectedPublication = [
       { id: 1, name: 'Vilela M.'},
       { id: 2, name: 'Ramirez E.' },
     ],
-    typeD: 'Article',
-    typeS: 'Journal',
+    resourcetype: 'Artículo de investigación',
     volumen: null,
     page_range: null,
     year: '2022',
@@ -194,8 +222,7 @@ export const dataSelectedPublication = [
       {id: 2, name: 'Charles V.'},
       {id: 3, name: 'Ramirez E.'},
     ],
-    typeD: 'Article',
-    typeS: 'Journal',
+    resourcetype: 'Artículo de investigación',
     volumen: '33',
     page_range: '178-201',
     year: '2022',
@@ -427,5 +454,9 @@ export const SPRuleCondition = [
   {
     id: 4,
     type: 'Menor que',
+  },
+  {
+    id: 5,
+    type: 'En el rango',
   },
 ]

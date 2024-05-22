@@ -14,21 +14,19 @@ export const HeadersPublicationsWorker = [
     value: 'author',
   },
   {
-    heading: 'Tipo de documento',
-    value: 'typeD',
-  },
-  {
-    heading: 'Tipo de fuente',
-    value: 'typeS',
+    heading: 'Tipo de recurso',
+    value: 'resourcetype',
   },
   {
     heading: 'Año',
     value: 'year',
   },
+  /*
   {
     heading: 'Registro hecho por',
     value: 'person',
   },
+  */
   {
     heading: 'Acciones',
     value: 'actions',
@@ -60,10 +58,12 @@ export const HeadersProjectsWorker = [
     heading: 'Monto',
     value: 'amount',
   },
+  /*
   {
     heading: 'Registro hecho por',
     value: 'person',
   },
+  */
   {
     heading: 'Acciones',
     value: 'actions',
@@ -91,10 +91,12 @@ export const HeadersFundingWorker = [
     heading: 'Entidad financiadora',
     value: 'orgunitFunded',
   },
+  /*
   {
     heading: 'Registro hecho por',
     value: 'person',
   },
+  */
 ]
 
 export const HeadersQualificationRules = [

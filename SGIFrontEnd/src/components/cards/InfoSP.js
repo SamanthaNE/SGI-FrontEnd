@@ -22,7 +22,7 @@ const InfoSP = ({data, headers, btnnav, detail, btnmore = "", pagesize = 5}) => 
     }
   };
 
-  const currentData = data.slice((currentPage - 1) * pagesize, currentPage * pagesize);
+  const currentData = data.length > 1 ? (data.slice((currentPage - 1) * pagesize, currentPage * pagesize)) : (data) ;
 
   const renderPageNumbers = () => {
     let startPage = 1;
@@ -79,38 +79,75 @@ const InfoSP = ({data, headers, btnnav, detail, btnmore = "", pagesize = 5}) => 
       :
       (
         <>
-        {currentData.map((obj, indexR) => (
-          <CCard key={indexR} className='mt-1'>
-            <CCardBody>
-              <CRow>
-                {headers.map((headerItems, indexH) => {
-                  return (
-                    <CCol key={indexH} className = {indexH == 0 ? ("col-4") : (null)}>
-                      {headerItems.value === 'actions' ? 
-                      (
-                        <CButton color="primary" variant="ghost" value={obj.id} onClick={handleNavigationAction}>
-                          {detail === true ? "Ver detalle" : "--"}
-                        </CButton>
-                      )
-                      :
-                      (
-                        headerItems.value === 'author' ? 
-                        (obj.author.map((authorItems, indexA) => {
-                          return (
-                            <CCardText className='my-0' key={indexA}>{authorItems.name}</CCardText>
+        {currentData.length > 0 ?
+          (
+            currentData.map((obj, indexR) => (
+              <CCard key={indexR} className='mt-1'>
+                <CCardBody>
+                  <CRow>
+                    {headers.map((headerItems, indexH) => {
+                      return (
+                        <CCol key={indexH} className = {indexH == 0 ? ("col-4") : (null)}>
+                          {headerItems.value === 'actions' ? 
+                          (
+                            <CButton color="primary" variant="ghost" value={obj.id} onClick={handleNavigationAction}>
+                              {detail === true ? "Ver detalle" : "--"}
+                            </CButton>
                           )
-                        }))
-                        :
-                        (<CCardText>{obj[`${headerItems.value}`]}</CCardText>)
+                          :
+                          (
+                            headerItems.value === 'author' ? 
+                            (obj.author.map((authorItems, indexA) => {
+                              return (
+                                <CCardText className='my-0' key={indexA}>{authorItems.name}</CCardText>
+                              )
+                            }))
+                            :
+                            (<CCardText>{obj[`${headerItems.value}`]}</CCardText>)
+                          )
+                          }
+                        </CCol>
                       )
-                      }
-                    </CCol>
-                  )
-                })}
-              </CRow>
-            </CCardBody>
-          </CCard>
-        ))}
+                    })}
+                  </CRow>
+                </CCardBody>
+              </CCard>
+            ))
+          )
+          :
+          (
+            <CCard className='mt-1'>
+              <CCardBody>
+                <CRow>
+                  {headers.map((headerItems, indexH) => {
+                    return (
+                      <CCol key={indexH} className = {indexH == 0 ? ("col-4") : (null)}>
+                        {headerItems.value === 'actions' ? 
+                        (
+                          <CButton color="primary" variant="ghost" value={currentData.id} onClick={handleNavigationAction}>
+                            {detail === true ? "Ver detalle" : "--"}
+                          </CButton>
+                        )
+                        :
+                        (
+                          headerItems.value === 'author' ? 
+                          (currentData.author.map((authorItems, indexA) => {
+                            return (
+                              <CCardText className='my-0' key={indexA}>{authorItems.name}</CCardText>
+                            )
+                          }))
+                          :
+                          (<CCardText>{currentData[`${headerItems.value}`]}</CCardText>)
+                        )
+                        }
+                      </CCol>
+                    )
+                  })}
+                </CRow>
+              </CCardBody>
+            </CCard>
+          )
+        }
         
         {/* PAGINATION */}
         {/* MODIFICAR: DINAMICO CON LA CANTIDAD DE RESULTADOS */}

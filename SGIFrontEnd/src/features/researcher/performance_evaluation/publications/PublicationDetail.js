@@ -23,12 +23,8 @@ const PublicationDetail = () => {
                 <div className="mb-2 text-body">{dataSelectedPublication[elementID - 1].abstract ?? "-"}</div>
               </CRow>
               <CRow>
-                <CCol sm={3} className="h6">Tipo de documento</CCol>
-                <CCol className="text-body">{dataSelectedPublication[elementID - 1].typeD ?? "-"}</CCol>
-              </CRow>
-              <CRow>
-                <CCol sm={3} className="h6">Tipo de fuente</CCol>
-                <CCol className="text-body">{dataSelectedPublication[elementID - 1].typeS ?? "-"}</CCol>
+                <CCol sm={3} className="h6">Tipo de recurso</CCol>
+                <CCol className="text-body">{dataSelectedPublication[elementID - 1].resourcetype ?? "-"}</CCol>
               </CRow>
               <CRow>
                 <CCol sm={3} className="h6">Nombre de la revista</CCol>

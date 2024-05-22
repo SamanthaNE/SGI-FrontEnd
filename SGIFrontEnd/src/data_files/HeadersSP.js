@@ -45,12 +45,8 @@ export const HeadersSPEval = [
     value: 'author',
   },
   {
-    heading: 'Tipo de documento',
-    value: 'typeD',
-  },
-  {
-    heading: 'Tipo de fuente',
-    value: 'typeS',
+    heading: 'Tipo de recurso',
+    value: 'resourcetype',
   },
   {
     heading: 'Grupo(s) de Inv.',

@@ -4,7 +4,7 @@ import { SPRuleCondition, SPTypes } from '../../data_files/HardData';
 import CIcon from '@coreui/icons-react';
 import { cilTrash } from '@coreui/icons';
 
-const CriteriaRuleSelector = ({ index, handleChange, onDelete }) => {
+const RuleFactorSelector = ({ index, handleChange, onDelete }) => {
   const [selectedOptionSPTypeAttribute, setSelectedOptionSPTypeAttribute] = useState('');
   const [selectedOptionSPTypeCondition, setSelectedOptionSPTypeCondition] = useState('');
   const [selectedOptionSPTypeValue, setSelectedOptionSPTypeValue] = useState('');
@@ -98,7 +98,7 @@ const CriteriaRuleSelector = ({ index, handleChange, onDelete }) => {
         </CCol>
 
         <CCol>
-          <CFormInput type="input" id="score" placeholder="Puntaje asignado" 
+          <CFormInput type="input" id="score" placeholder="Factor de multiplicación" 
                       value={score} onChange={(e) => setScore(e.target.value.replace(/[^0-9]/g, ''))}
           />
         </CCol>
@@ -113,4 +113,4 @@ const CriteriaRuleSelector = ({ index, handleChange, onDelete }) => {
   )
 }
 
-export default CriteriaRuleSelector
+export default RuleFactorSelector

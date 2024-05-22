@@ -5,6 +5,7 @@ const InfoSPCheck = ({data, headers, onAction, pagesize = 5}) => {
   const [selectedSP, setSelectedSP] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
 
+  /*
   const handleSelection = (e) => {
     const { checked, value } = e.target;
     const newSelectedSP = checked ? [...selectedSP, value] : selectedSP.filter((group) => group !== value);
@@ -12,6 +13,23 @@ const InfoSPCheck = ({data, headers, onAction, pagesize = 5}) => {
     setSelectedSP(newSelectedSP);
     onAction(newSelectedSP);
   }
+  */
+
+  const handleSelection = (selectedObj) => {
+    const selectedId = selectedObj.id.toString();
+    let newSelected;
+
+    if (selectedSP.some(obj => obj.id.toString() === selectedId)) {
+      // Remove the object from the selectedSP array
+      newSelected = selectedSP.filter(obj => obj.id.toString() !== selectedId);
+    } else {
+      // Add the object to the selectedSP array
+      newSelected = [...selectedSP, selectedObj];
+    }
+
+    setSelectedSP(newSelected);
+    onAction(newSelected);
+  };
 
   const totalPages = Math.ceil(data.length / pagesize);
 
@@ -83,7 +101,7 @@ const InfoSPCheck = ({data, headers, onAction, pagesize = 5}) => {
           <CCard key={indexR} className='mt-1'>
             <CCardBody>
               <CRow>
-                {<CFormCheck id="checkboxNoLabel" value={obj.id} onChange={handleSelection} checked={selectedSP.includes(obj.id.toString())}/>}
+                {<CFormCheck id="checkboxNoLabel" onChange={() => handleSelection(obj)} checked={selectedSP.some(selectedObj => selectedObj.id.toString() === obj.id.toString())}/>}
                 {headers.map((headerItems, indexH) => {
                   return (
                     <CCol key={indexH} className = {indexH == 0 ? ("col-4") : (null)}>

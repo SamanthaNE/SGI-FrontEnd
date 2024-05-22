@@ -33,6 +33,7 @@ export const _navWorker = [
     component: CNavTitle,
     name: 'Menú',
   },
+  /*
   {
     component: CNavGroup,
     name: 'Publicaciones',
@@ -49,6 +50,13 @@ export const _navWorker = [
         to: '/publicaciones/historico',
       },
     ]
+  },
+  */
+  {
+    component: CNavItem,
+    name: 'Publicaciones',
+    to: '/publicaciones/historico',
+    icon: <CIcon icon={cibReadTheDocs} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,

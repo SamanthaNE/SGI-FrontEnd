@@ -1,36 +1,65 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { CButton, CCard, CCardBody, CCardSubtitle, CCol, CFormCheck, CFormSelect, CRow } from '@coreui/react'
 import InfoSP from '../../../components/cards/InfoSP'
 import TabsSP from '../../../components/tabs/TabsSP'
-import { dataSPDataCuration, rgroupsSPDataCuration } from '../../../data_files/HardData'
+import { dataSPDataCuration, rgroupsSPDataCuration, dataScopusPublication } from '../../../data_files/HardData'
 import { HeadersSP } from '../../../data_files/HeadersSP'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  setIsPrincipalAuthor,
+  setIsRelatedProject,
+  setSelectedGroups,
+  setSelectedOptionAuthor,
+} from '../../../redux/slices/curationSlice'
 
 const SPDataCuration = () => {
   const { elementID } = useParams()
+  const navigate = useNavigate()
+/*
   const [isPrincipalAuthor, setIsPrincipalAuthor] = useState(null);
   const [isRelatedProject, setIsRelatedProject] = useState(null);
-  const [isActivatedQ, setActivatedQ] = useState(false)
   const [selectedGroups, setSelectedGroups] = useState([]);
   const [selectedOptionAuthor, setSelectedOptionAuthor] = useState('');
+*/
+  const [isActivatedQ, setActivatedQ] = useState(false)
+
+  /* REDUX */
+  const dispatch = useDispatch();
+  const {
+    isPrincipalAuthor,
+    isRelatedProject,
+    selectedGroups,
+    selectedOptionAuthor,
+    selectedProjects
+  } = useSelector((state) => state.curation)
 
   const [revisionData, setRevisionData] = useState([]);
-  
+
+  useEffect(() => {
+    if (isPrincipalAuthor !== null) {
+      setActivatedQ(true)
+    }
+  }, [isPrincipalAuthor])
+
   const handleRadioChange = (e) => {
-    setIsPrincipalAuthor(e.target.value === 'YesAuthor');
-    setSelectedOptionAuthor('')
+    console.log('radio')
+    dispatch(setIsPrincipalAuthor(e.target.value === 'YesAuthor'))
+    dispatch(setSelectedOptionAuthor(''))
     setActivatedQ(true)
-  };
+  }
 
   const handleGroupChange = (e) => {
+    console.log('Group')
     const { checked, value } = e.target;
     const newSelectedGroups = checked ? [...selectedGroups, value] : selectedGroups.filter((group) => group !== value);
 
-    setSelectedGroups(newSelectedGroups);
+    dispatch(setSelectedGroups(newSelectedGroups))
   };
 
   const handleRadioChangeProject = (e) => {
-    setIsRelatedProject(e.target.value === 'Yes');
+    console.log('Project')
+    dispatch(setIsRelatedProject(e.target.value === 'Yes'));
   };
 
   const handleRevision = () => {
@@ -42,20 +71,13 @@ const SPDataCuration = () => {
     setRevisionData(results);
   };
 
-  const authorOptions = dataSPDataCuration.map((item) => {
-    return item.author.map((authorItem) => ({
-      label: authorItem.name,
-      value: authorItem.id,
-    }));
-  }).flat();
-
   return (
     <>
       {/* PUBLICATION DATA */}
       <div className='h4 mb-3'>Registro de informacion</div>
       <div className='h6 mb-3'>Publicación seleccionada</div>
 
-      <InfoSP data={dataSPDataCuration} headers={HeadersSP} detail={false}/>
+      <InfoSP data={dataScopusPublication[elementID - 1]} headers={HeadersSP} detail={false}/>
       
       {/* NEW DATA */}
       <div className='h6 mt-3'>Complete la siguiente informacion</div>
@@ -73,16 +95,15 @@ const SPDataCuration = () => {
             {
               (isPrincipalAuthor === false) &&
               (
-                <CFormSelect aria-label="principalAuthor" value={selectedOptionAuthor} onChange={(e) => setSelectedOptionAuthor(e.target.value)}>
+                <CFormSelect aria-label="principalAuthor" value={selectedOptionAuthor} onChange={(e) => dispatch(setSelectedOptionAuthor(e.target.value))}>
                   <option value="">Seleccione al autor principal</option>
-                  {dataSPDataCuration[elementID - 1].author.map((option) => (
+                  {dataScopusPublication[elementID - 1].author.map((option) => (
                     <option  key={option.id} value={option.name}>
                       {option.name}
                     </option>
                   ))}
                 </CFormSelect>
               )
-              /*(<CFormSelect className='mt-2' options={authorOptions} label="Seleccione al autor principal"/>)*/
             }
             </CCol>
           </CRow>
@@ -98,7 +119,9 @@ const SPDataCuration = () => {
               <CCardSubtitle className="mb-3 text-body-secondary">¿A que grupo de investigación pertenece la publicación?</CCardSubtitle>
               {rgroupsSPDataCuration.map((groupsItems, indexH) => {
                 return (
-                  <CFormCheck key={indexH} button={{ color: 'primary', variant: 'outline' }} /*type="radio"*/ id={`${indexH}`} label={groupsItems.Acronym} onChange={handleGroupChange} checked={selectedGroups.includes(groupsItems.id.toString())} value={groupsItems.id.toString()}/>
+                  <CFormCheck key={indexH} button={{ color: 'primary', variant: 'outline' }} id={`${indexH}`} 
+                              label={groupsItems.Acronym} onChange={handleGroupChange} 
+                              checked={selectedGroups.includes(groupsItems.id.toString())} value={groupsItems.id.toString()}/>
                 )
               })}
             </CCardBody>
@@ -124,7 +147,7 @@ const SPDataCuration = () => {
       {
         isRelatedProject && isActivatedQ &&
         (
-          <TabsSP SPID={elementID} typeTab={"scientific"} />
+          <TabsSP SPID={elementID} typeTab={"scientific"} data={selectedProjects} />
         )
       }
 
@@ -133,8 +156,8 @@ const SPDataCuration = () => {
         isActivatedQ &&
         (
         <div className="d-grid gap-2 d-md-flex justify-content-md-end mt-3 mb-4">
-          <CButton color="primary" variant="outline" className="me-md-2">Cancelar</CButton>
-          <CButton color="primary" onClick={handleRevision}>Terminar revisión</CButton>
+          <CButton color="primary" variant="outline" className="me-md-2" onClick={() =>navigate(-1)}>Cancelar</CButton>
+          <CButton color="primary" onClick={handleRevision} disabled={isRelatedProject}>Terminar revisión</CButton>
         </div>
         )
       }

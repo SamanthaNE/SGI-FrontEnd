@@ -1,8 +1,10 @@
 import { CButton, CCard, CCardBody, CCardSubtitle, CCol, CForm, CFormInput, CFormSelect, CRow } from '@coreui/react'
 import React, { useState } from 'react'
 import { Currency, FFOrg, PFFunding } from '../../../data_files/FiltersData';
+import { useNavigate } from 'react-router-dom';
 
 const NewFunding = () => {
+  const navigate = useNavigate()
   const [fundingName, setFundingName] = useState('');
   const [selectedOptionFunding, setSelectedOptionFunding] = useState('');
   const [selectedOptionCurrency, setSelectedOptionCurrency] = useState('');
@@ -28,6 +30,8 @@ const NewFunding = () => {
 
     const results = [];
     setFundingData(results);
+
+    /* ACA DEBE GUARDA LA INFO EN LA DB Y REDIRECCIONAR A LA PAGINA ANTERIOR */
   };
 
   return (
@@ -50,20 +54,20 @@ const NewFunding = () => {
             />
           </CForm>
 
-          <CFormSelect className='mb-3' aria-label="orgunit" label="Entidad financiadora" 
-                        value={selectedOptionOrg} onChange={(e) => setSelectedOptionOrg(e.target.value)}>
+          <CFormSelect className='mb-3' aria-label="typeFunding" label="Tipo de financiamiento" 
+                        value={selectedOptionFunding} onChange={(e) => setSelectedOptionFunding(e.target.value)}>
             <option value="">Seleccione una opción</option>
-            {FFOrg.map((option) => (
+            {PFFunding.map((option) => (
               <option  key={option.value} value={option.label}>
                 {option.label}
               </option>
             ))}
           </CFormSelect>
 
-          <CFormSelect className='mb-3' aria-label="typeFunding" label="Tipo de financiamiento" 
-                        value={selectedOptionFunding} onChange={(e) => setSelectedOptionFunding(e.target.value)}>
+          <CFormSelect className='mb-3' aria-label="orgunit" label="Entidad financiadora" 
+                        value={selectedOptionOrg} onChange={(e) => setSelectedOptionOrg(e.target.value)}>
             <option value="">Seleccione una opción</option>
-            {PFFunding.map((option) => (
+            {FFOrg.map((option) => (
               <option  key={option.value} value={option.label}>
                 {option.label}
               </option>
@@ -96,7 +100,7 @@ const NewFunding = () => {
 
       {/* FINISH REV */}       
       <div className="d-grid gap-2 d-md-flex justify-content-md-end mt-3 mb-4">
-        <CButton color="primary" variant="outline" className="me-md-2">Cancelar</CButton>
+        <CButton color="primary" variant="outline" className="me-md-2" onClick={() =>navigate(-1)}>Cancelar</CButton>
         <CButton color="primary" onClick={handleFundingData}>Guardar</CButton>
       </div>
 
