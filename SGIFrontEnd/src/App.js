@@ -13,7 +13,7 @@ const Login = React.lazy(() => import('./features/login/Login'))
 const App = () => {
 
   return (
-    <UserProvider>
+    //<UserProvider>
       <HashRouter>
         <Suspense
           fallback={
@@ -25,13 +25,12 @@ const App = () => {
           
         <Routes>
           <Route path="/login" element={<Login />} />
-          {/*<Route exact path="/login" name="Login Page" element={<Login />} />*/}
-          <Route path="*" name="Home" element={<DefaultLayout />} />
+          <Route path="*" element={<DefaultLayout />} />
         </Routes>
           
         </Suspense>
       </HashRouter>
-    </UserProvider>
+    //</UserProvider>
   )
 }
 

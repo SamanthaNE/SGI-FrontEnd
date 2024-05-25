@@ -18,13 +18,13 @@ const Login = ({ onLogin }) => {
     e.preventDefault();
 
     if (username === 'investigador' && password === '1234') {
-      login({ username, role: 'Investigador' });
+      //login({ username, role: 'Investigador' });
       sessionStorage.setItem('user', JSON.stringify({ username, role: 'Investigador' }));
 
       navigate('/publicaciones/revision');
     } else if (username === 'trabajador' && password === '1234') {
       
-      login({ username, role: 'Trabajador' });
+      //login({ username, role: 'Trabajador' });
 
       sessionStorage.setItem('user', JSON.stringify({ username, role: 'Trabajador' }));
 

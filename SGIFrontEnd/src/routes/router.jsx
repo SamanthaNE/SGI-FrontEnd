@@ -5,6 +5,8 @@ import { Navigate } from "react-router-dom";
 //import Authenticated from "@components/Authenticated";
 import { routes as routesWorker } from "@features/Modulo4/routes/router";
 import { routes as routesResearcher } from "@features/Modulo3/routes/router";
+import { element } from "prop-types";
+import ScopusPublication from "../features/researcher/scopus_publication/ScopusPublication";
 
 const defaultRoutes = [
 	{
@@ -18,7 +20,7 @@ const defaultRoutes = [
 			<Authenticated
 				allowedRoles={[
 					EnumRoles.WORKER,
-                    EnumRoles.RESEARCHER
+          EnumRoles.RESEARCHER
 				]}>
 				<Login />
 			</Authenticated>

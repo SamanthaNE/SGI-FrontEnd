@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { CButton, CCol, CFormCheck, CFormInput, CFormSelect, CRow } from '@coreui/react'
-import { SPRuleCondition, SPTypes } from '../../data_files/HardData';
+import { SPAttributes, SPRuleConditionNumeric, SPRuleConditionTextual } from '../../data_files/HardData';
 import CIcon from '@coreui/icons-react';
 import { cilTrash } from '@coreui/icons';
 
-const RuleFactorSelector = ({ index, handleChange, onDelete }) => {
+const RuleFactorSelector = ({ index, handleChange, onDelete,  selectedSPTYpe }) => {
   const [selectedOptionSPTypeAttribute, setSelectedOptionSPTypeAttribute] = useState('');
   const [selectedOptionSPTypeCondition, setSelectedOptionSPTypeCondition] = useState('');
   const [selectedOptionSPTypeValue, setSelectedOptionSPTypeValue] = useState('');
@@ -31,23 +31,24 @@ const RuleFactorSelector = ({ index, handleChange, onDelete }) => {
     }
   }
 
+  const filteredAttributes = SPAttributes.filter(attr => attr.sptype === selectedSPTYpe);
 
   return (
     <>
       <CRow className="d-flex align-items-center mb-3">
         <CCol sm={1}>
           <CFormCheck button={{ color: 'primary', variant: 'outline' }} type="radio" name={`options-outlined-status-${index}`}  
-                      id={`Y-${index}`} label={'Y'} value={"AND"} onChange={handleStatus} checked={activeStatus === "AND"}/>
+                      id={`FY-${index}`} label={'Y'} value={"AND"} onChange={handleStatus} checked={activeStatus === "AND"}/>
           <CFormCheck button={{ color: 'primary', variant: 'outline' }} type="radio" name={`options-outlined-status-${index}`}
-                       id={`O-${index}`}  label={'O'} value={"OR"} onChange={handleStatus} checked={activeStatus === "OR"}/>
+                       id={`FO-${index}`}  label={'O'} value={"OR"} onChange={handleStatus} checked={activeStatus === "OR"}/>
         </CCol>
         <CCol>
           <CFormSelect aria-label="type"
                         value={selectedOptionSPTypeAttribute} onChange={(e) => setSelectedOptionSPTypeAttribute(e.target.value)}>
             <option value="">Atributo</option>
-            {SPTypes.map((option, indexSPT) => (
-              <option key={option.id} value={option.id} disabled={indexSPT > 1 ? true : false}>
-                {option.type}
+            {filteredAttributes.map((option, indexSPA) => (
+              <option key={option.id} value={option.id}>
+                {option.name}
               </option>
             ))}
           </CFormSelect>
@@ -56,43 +57,72 @@ const RuleFactorSelector = ({ index, handleChange, onDelete }) => {
           <CFormSelect aria-label="condition"
                         value={selectedOptionSPTypeCondition} onChange={handleConditionChange}>
             <option value="">Condición</option>
-            {SPRuleCondition.map((option) => (
-              <option key={option.id} value={option.id}>
-                {option.type}
-              </option>
-            ))}
+            {selectedOptionSPTypeAttribute &&
+            (
+              SPAttributes[selectedOptionSPTypeAttribute - 1].type === 'textual' ?
+              (
+                SPRuleConditionTextual.map((option) => (
+                  <option key={option.id} value={option.id}>
+                    {option.type}
+                  </option>
+                ))
+              )
+              :
+              (
+                SPRuleConditionNumeric.map((option) => (
+                  <option key={option.id} value={option.id}>
+                    {option.type}
+                  </option>
+                ))
+              )
+            )
+            }
           </CFormSelect>
         </CCol>
         <CCol>
-        {
-          isInputVisible ? 
-          (
-            <>
-              <CFormInput
-                aria-label="criteria-value"
-                placeholder="Mínimo valor"
-                value={minValue}
-                onChange={(e) => setMinValue(e.target.value)}
-              />
-              <CFormInput
-                aria-label="criteria-value"
-                placeholder="Máximo valor"
-                value={maxValue}
-                onChange={(e) => setMaxValue(e.target.value)}
-              />
-            </>
-          )
-          :
+        {selectedOptionSPTypeAttribute &&
+          SPAttributes[selectedOptionSPTypeAttribute - 1].type === 'textual' ? 
           (
             <CFormSelect aria-label="criteria-value"
                         value={selectedOptionSPTypeValue} onChange={(e) => setSelectedOptionSPTypeValue(e.target.value)}>
               <option value="">Valor</option>
-              {SPTypes.map((option, indexSPT) => (
-                <option key={option.id} value={option.id} disabled={indexSPT > 1 ? true : false}>
-                  {option.type}
-                </option>
-              ))}
+              {
+                SPAttributes[selectedOptionSPTypeAttribute - 1].attributeValue.map((option, indexSPT) => (
+                  <option key={option.id} value={option.id}>
+                    {option.value}
+                  </option>
+                ))
+              }
             </CFormSelect>
+          )
+          :
+          (
+            isInputVisible ?
+            (
+              <>
+                <CFormInput
+                  aria-label="criteria-value"
+                  placeholder="Mínimo valor"
+                  value={minValue}
+                  onChange={(e) => setMinValue(e.target.value.replace(/[^0-9]/g, ''))}
+                />
+                <CFormInput
+                  aria-label="criteria-value"
+                  placeholder="Máximo valor"
+                  value={maxValue}
+                  onChange={(e) => setMaxValue(e.target.value.replace(/[^0-9]/g, ''))}
+                />
+              </>
+            )
+            :
+            (
+              <CFormInput
+                aria-label="criteria-value"
+                placeholder="Valor"
+                value={minValue}
+                onChange={(e) => setMinValue(e.target.value.replace(/[^0-9]/g, ''))}
+              />
+            )
           )
         }
         </CCol>

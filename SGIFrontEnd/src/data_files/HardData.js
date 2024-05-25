@@ -418,27 +418,32 @@ export const dataQualificationRules = [
 export const SPTypes = [
   {
     id: 1,
-    type: 'Publicación',
+    type: 'publication',
+    name: 'Publicación',
   },
   {
     id: 2,
-    type: 'Proyecto',
+    type: 'project',
+    name: 'Proyecto',
   },
   {
     id: 3,
-    type: 'Patente',
+    type: 'patent',
+    name: 'Patente',
   },
   {
     id: 4,
-    type: 'Producto',
+    type: 'product',
+    name: 'Producto',
   },
   {
     id: 5,
-    type: 'Tesis',
+    type: 'thesis',
+    name: 'Tesis',
   },
 ]
 
-export const SPRuleCondition = [
+export const SPRuleConditionNumeric = [
   {
     id: 1,
     type: 'Igual a',
@@ -458,5 +463,150 @@ export const SPRuleCondition = [
   {
     id: 5,
     type: 'En el rango',
+  },
+]
+
+export const SPRuleConditionTextual = [
+  {
+    id: 1,
+    type: 'Igual a',
+  },
+  {
+    id: 2,
+    type: 'Diferente a',
+  },
+]
+
+export const SPAttributes = [
+  {
+    id: 1,
+    sptype: 'publication',
+    attribute: 'sub_type_description',
+    name: 'Tipo de documento',
+    type: 'textual',
+    attributeValue: [
+      {
+        id: 1,
+        value: 'Article',
+        score: 0,
+      },
+      {
+        id: 2,
+        value: 'Book',
+        score: 0,
+      },
+      {
+        id: 3,
+        value: 'Book Chapter',
+        score: 0,
+      },
+      {
+        id: 4,
+        value: 'Conference Paper',
+        score: 0,
+      },
+      {
+        id: 5,
+        value: 'Data Paper',
+        score: 0,
+      },
+      {
+        id: 6,
+        value: 'Editorial',
+        score: 0,
+      },
+      {
+        id: 7,
+        value: 'Letter',
+        score: 0,
+      },
+      {
+        id: 8,
+        value: 'Review',
+        score: 0,
+      },
+    ]
+  },
+  {
+    id: 2,
+    sptype: 'publication',
+    attribute: 'aggregation_type',
+    name: 'Tipo de fuente',
+    type: 'textual',
+    attributeValue: [
+      {
+        id: 1,
+        value: 'Journal',
+        score: 0,
+      },
+      {
+        id: 2,
+        value: 'Conference Proceeding',
+        score: 0,
+      },
+      {
+        id: 3,
+        value: 'Book Series',
+        score: 0,
+      },
+      {
+        id: 4,
+        value: 'Book',
+        score: 0,
+      },
+      {
+        id: 5,
+        value: 'Trade Journal',
+        score: 0,
+      },
+    ]
+  },
+  {
+    id: 3,
+    sptype: 'project',
+    attribute: 'idProject_Status_Type_CONCYTEC',
+    name: 'Estado',
+    type: 'textual',
+    attributeValue: [
+      {
+        id: 1,
+        value: 'POR_INICIAR',
+        score: 0,
+      },
+      {
+        id: 2,
+        value: 'EN_EJECUCION',
+        score: 0,
+      },
+      {
+        id: 3,
+        value: 'EN_PROCESO_CIERRRE',
+        score: 0,
+      },
+      {
+        id: 4,
+        value: 'CERRADO',
+        score: 0,
+      },
+      {
+        id: 5,
+        value: 'CANCELADO',
+        score: 0,
+      },
+    ]
+  },
+  {
+    id: 4,
+    sptype: 'project',
+    attribute: 'Amount',
+    name: 'Monto de financiamiento',
+    type: 'numeric',
+  },
+  {
+    id: 5,
+    sptype: 'project',
+    attribute: 'funding_type',
+    name: 'Tipos de financiamiento',
+    type: 'textual',
   },
 ]

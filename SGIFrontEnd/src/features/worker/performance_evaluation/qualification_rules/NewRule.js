@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { CButton, CCard, CCardBody, CCardSubtitle, CCol, CForm, CFormInput, CFormSelect, CRow } from '@coreui/react'
-import { SPRuleCondition, SPTypes, dataQualificationCategories } from '../../../../data_files/HardData';
+import { SPTypes, dataQualificationCategories } from '../../../../data_files/HardData';
 import CriteriaRuleSelector from '../../../../components/selectors/CriteriaRuleSelector';
 import MandatoryRuleCriteria from '../../../../components/selectors/MandatoryRuleCriteria';
 import CIcon from '@coreui/icons-react';
@@ -109,15 +109,15 @@ const NewRule = () => {
                             value={selectedOptionSPType} onChange={(e) => setSelectedOptionSPType(e.target.value)}>
                 <option value="">Tipo de producción científica</option>
                 {SPTypes.map((option, indexSPT) => (
-                  <option key={option.id} value={option.id} disabled={indexSPT > 1 ? true : false}>
-                    {option.type}
+                  <option key={option.id} value={option.type} disabled={indexSPT > 1 ? true : false}>
+                    {option.name}
                   </option>
                 ))}
               </CFormSelect>
             </CCol>
           </CRow>
 
-          <MandatoryRuleCriteria />
+          <MandatoryRuleCriteria selectedSPTYpe={selectedOptionSPType} />
 
           {ruleCriteria.map((_, index) => (
             <CriteriaRuleSelector
@@ -125,6 +125,7 @@ const NewRule = () => {
               index={index}
               handleChange={handleCriteriaChange}
               onDelete={handleDeleteCriteria}
+              selectedSPTYpe={selectedOptionSPType} 
             />
           ))}
 
@@ -134,7 +135,7 @@ const NewRule = () => {
             </CButton>
           </CCol>
 
-          <RuleFactor />
+          <RuleFactor selectedSPTYpe={selectedOptionSPType} />
 
           {ruleFactor.map((_, index) => (
             <RuleFactorSelector
@@ -142,6 +143,7 @@ const NewRule = () => {
               index={index}
               handleChange={handleFactorChange}
               onDelete={handleDeleteFactor}
+              selectedSPTYpe={selectedOptionSPType} 
             />
           ))}
 
