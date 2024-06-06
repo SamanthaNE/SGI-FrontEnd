@@ -84,7 +84,7 @@ const InfoGroupWorker = ({data, headers, btnnav, detail, pagesize = 5}) => {
                     <CCol key={indexH} className = {indexH == 0 ? ("col-6") : (null)}>
                       {headerItems.value === 'actions' ? 
                       (
-                        <CButton color="primary" variant="ghost" value={obj.id} onClick={handleNavigationAction}>
+                        <CButton color="primary" variant="ghost" value={obj.idOrgUnit} onClick={handleNavigationAction}>
                           {detail === true ? "Ver detalle" : "--"}
                         </CButton>
                       )

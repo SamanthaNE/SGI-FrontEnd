@@ -1,25 +1,25 @@
 const StatusProject = [
   {
-    id: 'ACTIVE',
+    id: 'ACTIVO',
     name: 'Activo',
     substatus: [
-      {id: 'INITIAL', name: 'Por iniciar'},
-      {id: 'EXECUTION', name: 'En ejecución'},
+      {id: 'POR_INICIAR', name: 'Por iniciar'},
+      {id: 'EN_EJECUCION', name: 'En ejecución'},
     ],
   },
   {
-    id: 'CONCLUDED',
+    id: 'CONCLUIDO',
     name: 'Concluido',
     substatus: [
-      {id: 'PROCESS', name: 'En proceso de cierre'},
-      {id: 'CLOSED', name: 'Cierre'},
+      {id: 'EN_PROCESO_CIERRRE', name: 'En proceso de cierre'},
+      {id: 'CERRADO', name: 'Cierre'},
     ],
   },
   {
-    id: 'SUSPENDED',
+    id: 'SUSPENDIDO',
     name: 'Suspendido',
     substatus: [
-      {id: 'CANCELED', name: 'Cancelado'},
+      {id: 'CANCELADO', name: 'Cancelado'},
     ],
   },
 ]

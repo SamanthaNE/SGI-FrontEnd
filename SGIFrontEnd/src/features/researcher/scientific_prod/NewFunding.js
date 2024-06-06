@@ -1,7 +1,8 @@
 import { CButton, CCard, CCardBody, CCardSubtitle, CCol, CForm, CFormInput, CFormSelect, CRow } from '@coreui/react'
 import React, { useState } from 'react'
-import { Currency, FFOrg, PFFunding } from '../../../data_files/FiltersData';
+import { Currency, FFOrg, FundedAs, PFFunding } from '../../../data_files/FiltersData';
 import { useNavigate } from 'react-router-dom';
+import { KEYCODE } from '../../../config/Constants'
 
 const NewFunding = () => {
   const navigate = useNavigate()
@@ -10,7 +11,7 @@ const NewFunding = () => {
   const [selectedOptionCurrency, setSelectedOptionCurrency] = useState('');
   const [fundingAmount, setFundingAmount] = useState('');
   const [selectedOptionOrg, setSelectedOptionOrg] = useState('');
-  const [fundingData, setFundingData] = useState([]);
+  const [selectedOptionFundedAs, setSelectedOptionFundedAs] = useState('');
 
   const handleFundingAmountChange = (e) => {
     const value = e.target.value;
@@ -22,14 +23,17 @@ const NewFunding = () => {
   };
 
   const handleFundingData = () => {
-    console.log(fundingName);
-    console.log(selectedOptionFunding);
-    console.log(selectedOptionCurrency);
-    console.log(fundingAmount);
-    console.log(selectedOptionOrg)
+    const params = {
+      keyCode: KEYCODE,
+      fundedAs: selectedOptionFundedAs,
+      categoria: fundingName,
+      currCode: selectedOptionCurrency,
+      amount: fundingAmount,
+      idFundingType: selectedOptionFunding,
+      idOrgUnit: selectedOptionOrg
+    };
 
-    const results = [];
-    setFundingData(results);
+    console.log(params)
 
     /* ACA DEBE GUARDA LA INFO EN LA DB Y REDIRECCIONAR A LA PAGINA ANTERIOR */
   };
@@ -43,22 +47,36 @@ const NewFunding = () => {
       <CCard className='mb-3'>
         <CCardBody>
           <CCardSubtitle className="mb-3 text-body-secondary">Complete la siguiente informacion</CCardSubtitle>
-
-          <CForm>
-            <CFormInput className='mb-3' id="name"
-              type="input"
-              label="Nombre del financiamiento"
-              placeholder="Nombre"
-              value={fundingName} 
-              onChange={(e) => setFundingName(e.target.value)}
-            />
-          </CForm>
+          <CRow className="align-items-end">
+            <CCol>
+              <CFormSelect className='mb-3' aria-label="typeFundedAs" label="Nombre del financiamiento"
+                          value={selectedOptionFundedAs} onChange={(e) => setSelectedOptionFundedAs(e.target.value)}>
+                <option value="">Seleccione una opción</option>
+                {FundedAs.map((option, indexFA) => (
+                  <option  key={indexFA} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </CFormSelect>
+            </CCol>
+            <CCol>
+              <CForm>
+                <CFormInput className='mb-3' id="name"
+                  type="input"
+                  placeholder="Nombre o categoria"
+                  value={fundingName} 
+                  onChange={(e) => setFundingName(e.target.value)}
+                />
+              </CForm>
+            </CCol>
+          </CRow>
+          
 
           <CFormSelect className='mb-3' aria-label="typeFunding" label="Tipo de financiamiento" 
                         value={selectedOptionFunding} onChange={(e) => setSelectedOptionFunding(e.target.value)}>
             <option value="">Seleccione una opción</option>
-            {PFFunding.map((option) => (
-              <option  key={option.value} value={option.label}>
+            {PFFunding.map((option, indexPFF) => (
+              <option  key={indexPFF} value={option.value}>
                 {option.label}
               </option>
             ))}
@@ -67,8 +85,8 @@ const NewFunding = () => {
           <CFormSelect className='mb-3' aria-label="orgunit" label="Entidad financiadora" 
                         value={selectedOptionOrg} onChange={(e) => setSelectedOptionOrg(e.target.value)}>
             <option value="">Seleccione una opción</option>
-            {FFOrg.map((option) => (
-              <option  key={option.value} value={option.label}>
+            {FFOrg.map((option, indexFF) => (
+              <option  key={indexFF} value={option.value}>
                 {option.label}
               </option>
             ))}
@@ -79,8 +97,8 @@ const NewFunding = () => {
               <CFormSelect className='mb-3' aria-label="typeFunding" label="Monto otorgado" 
                             value={selectedOptionCurrency} onChange={(e) => setSelectedOptionCurrency(e.target.value)}>
                 <option value="">Seleccione una opción</option>
-                {Currency.map((option) => (
-                  <option  key={option.value} value={option.label}>
+                {Currency.map((option, indexC) => (
+                  <option  key={indexC} value={option.value}>
                     {option.label}
                   </option>
                 ))}

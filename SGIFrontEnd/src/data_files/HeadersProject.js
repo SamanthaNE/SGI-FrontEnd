@@ -13,7 +13,7 @@ export const HeadersProject = [
   },
   {
     heading: 'Estado',
-    value: 'status',
+    value: 'idProjectStatusTypeCONCYTEC',
   },
   {
     heading: 'Tipo de financiamiento',
@@ -40,12 +40,14 @@ export const HeadersProjectEval = [
   },
   {
     heading: 'Estado',
-    value: 'status',
+    value: 'idProjectStatusTypeCONCYTEC',
   },
+  /*
   {
     heading: 'Grupo(s) de Inv.',
     value: 'group',
   },
+  */
   {
     heading: 'Tipo de financiamiento',
     value: 'fundingType',

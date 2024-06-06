@@ -31,34 +31,9 @@ export const PFStatus = [
   { label: 'Cancelado', value: '6' },
 ]
 
-export const PFFunding = [
-  { label: 'Fondos propios', value: '1' },
-  { label: 'Otras modalidades de financiamiento', value: '2' },
-  { label: 'Premio o reconocimiento', value: '3' },
-  { label: 'Convocatoria', value: '4' },
-  { label: 'Donación', value: '5' },
-  { label: 'Subvención', value: '6' },
-  { label: 'Programa de Financiamiento', value: '7' },
-  { label: 'Financiamiento por licitación', value: '8' },
-]
-
-export const FFOrg = [
-  { label: 'Vicerrectorado de Investigación', value: '1' },
-  { label: 'Externo', value: '2' },
-]
-
 export const NPOrg = [
   { label: 'Vicerrectorado de Investigación', value: '1' },
   { label: 'Externo', value: '2' },
-]
-
-export const Currency = [
-  { label: 'PEN - Sol (S/.)', value: '1' },
-  { label: 'USD - Dólar estadounidense ($)', value: '2' },
-  { label: 'EUR - Euro (€)', value: '3' },
-  { label: 'CAD - Dólar canadiense (C$)', value: '4' },
-  { label: 'CHF - Franco suizo (Fr)', value: '5' },
-  { label: 'GBP - Libra esterlina (£)', value: '6' }
 ]
 
 export const Category = [
@@ -69,8 +44,49 @@ export const Category = [
   { label: 'No evaluado', value: '5' },
 ]
 
+/* **************************************** */
+
 export const ProjectTeamRoles = [
-  { label: 'INVESTIGADOR_PRINCIPAL', value: '1' },
-  { label: 'CO_INVESTIGADOR', value: '2' },
-  { label: 'ASISTENTE_INVESTIGACION ', value: '3' },
+  {
+    value: 'INVESTIGADOR_PRINCIPAL',
+    label: 'Investigador principal',
+  },
+  {
+    value: 'CO_INVESTIGADOR',
+    label: 'Co Investigador',
+  },
+  {
+    value: 'ASISTENTE_INVESTIGACION',
+    label: 'Asistente de investigación',
+  },
+]
+
+export const PFFunding = [
+  { label: 'Fondos propios', value: 'INTERNAL' },
+  { label: 'Otras modalidades de financiamiento', value: 'CONTRACT' },
+  { label: 'Premio o reconocimiento', value: 'AWARD' },
+  { label: 'Convocatoria', value: 'CALL' },
+  { label: 'Donación', value: 'GIFT' },
+  { label: 'Subvención', value: 'GRANT' },
+  { label: 'Programa de Financiamiento', value: 'PROGRAMME' },
+  { label: 'Financiamiento por licitación', value: 'TENDER' },
+]
+
+export const FFOrg = [
+  { label: 'Vicerrectorado de Investigación', value: 'VRI_PUCP' },
+  { label: 'Externo', value: 'EXTERNO' },
+]
+
+export const FundedAs = [
+  { label: 'CAP', value: 'CAP' },
+  { label: 'Externo', value: 'EXTERNO' },
+]
+
+export const Currency = [
+  { label: 'PEN - Sol (S/.)', value: 'PEN' },
+  { label: 'USD - Dólar estadounidense ($)', value: 'USD' },
+  { label: 'EUR - Euro (€)', value: 'EUR' },
+  { label: 'CAD - Dólar canadiense (C$)', value: 'CAD' },
+  { label: 'CHF - Franco suizo (Fr)', value: 'CHF' },
+  { label: 'GBP - Libra esterlina (£)', value: 'GBP' }
 ]

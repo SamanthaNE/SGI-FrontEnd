@@ -14,6 +14,7 @@ const initialState = {
     activeStatus: null,
     activeSubStatus: null,
     isProjectFunded: null,
+    isParticipating: null,
     isTeam: null
   },
   selectedFundings: [],
@@ -62,6 +63,9 @@ const curationSlice = createSlice({
     setIsTeam: (state, action) => {
       state.newProject.isTeam = action.payload
     },
+    setIsParticipating: (state, action) => {
+      state.newProject.isParticipating = action.payload
+    },
     setSelectedFundings: (state, action) => {
       state.selectedFundings = action.payload
     },
@@ -82,6 +86,7 @@ export const {
   setActiveSubStatus,
   setIsProjectFunded,
   setIsTeam,
+  setIsParticipating,
   setSelectedFundings
 } = curationSlice.actions
 

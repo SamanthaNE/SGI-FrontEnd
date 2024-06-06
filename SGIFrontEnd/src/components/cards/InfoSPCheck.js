@@ -5,25 +5,13 @@ const InfoSPCheck = ({data, headers, onAction, pagesize = 5}) => {
   const [selectedSP, setSelectedSP] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
 
-  /*
-  const handleSelection = (e) => {
-    const { checked, value } = e.target;
-    const newSelectedSP = checked ? [...selectedSP, value] : selectedSP.filter((group) => group !== value);
-
-    setSelectedSP(newSelectedSP);
-    onAction(newSelectedSP);
-  }
-  */
-
   const handleSelection = (selectedObj) => {
-    const selectedId = selectedObj.id.toString();
+    const selectedId = selectedObj.idProject;
     let newSelected;
 
-    if (selectedSP.some(obj => obj.id.toString() === selectedId)) {
-      // Remove the object from the selectedSP array
-      newSelected = selectedSP.filter(obj => obj.id.toString() !== selectedId);
+    if (selectedSP.some(obj => obj.id === selectedId)) {
+      newSelected = selectedSP.filter(obj => obj.id !== selectedId);
     } else {
-      // Add the object to the selectedSP array
       newSelected = [...selectedSP, selectedObj];
     }
 
@@ -101,7 +89,7 @@ const InfoSPCheck = ({data, headers, onAction, pagesize = 5}) => {
           <CCard key={indexR} className='mt-1'>
             <CCardBody>
               <CRow>
-                {<CFormCheck id="checkboxNoLabel" onChange={() => handleSelection(obj)} checked={selectedSP.some(selectedObj => selectedObj.id.toString() === obj.id.toString())}/>}
+                {<CFormCheck id="checkboxNoLabel" onChange={() => handleSelection(obj)} checked={selectedSP.some(selectedObj => selectedObj.idProject === obj.idProject)}/>}
                 {headers.map((headerItems, indexH) => {
                   return (
                     <CCol key={indexH} className = {indexH == 0 ? ("col-4") : (null)}>
@@ -113,7 +101,28 @@ const InfoSPCheck = ({data, headers, onAction, pagesize = 5}) => {
                           )
                         }))
                         :
-                        (<CCardText>{obj[`${headerItems.value}`]}</CCardText>)
+                        headerItems.value === 'fundingType' && obj.relatedFundingList ? 
+                        (obj.relatedFundingList.map((fundingItems, indexF) => {
+                          return (
+                            <CCardText className='my-0' key={indexF}>{fundingItems.fundingType}</CCardText>
+                          )
+                        }))
+                        :
+                        headerItems.value === 'amount' ? 
+                        (obj.relatedFundingList ?
+                          obj.relatedFundingList.map((fundingItems, indexF) => {
+                            return (
+                              <CCardText className='my-0' key={indexF}>{fundingItems.currCode + " " + fundingItems.amount}</CCardText>
+                            )
+                          })
+                          :
+                          (<CCardText className='my-0'>{obj.currCode + " " + obj.amount}</CCardText>)
+                        )
+                        :
+                        obj[`${headerItems.value}`] === "" ?
+                        (<CCardText>{<i>Sin {headerItems.heading}</i>}</CCardText>)
+                        :
+                        (<CCardText>{obj[`${headerItems.value}`] ?? <i>Sin información</i>}</CCardText>)
                       }
                     </CCol>
                   )
@@ -124,7 +133,6 @@ const InfoSPCheck = ({data, headers, onAction, pagesize = 5}) => {
         ))}
         
         {/* PAGINATION */}
-        {/* MODIFICAR: DINAMICO CON LA CANTIDAD DE RESULTADOS */}
         {(data.length > pagesize) && 
         (
           <nav aria-label="pageNav" className='mt-2'>

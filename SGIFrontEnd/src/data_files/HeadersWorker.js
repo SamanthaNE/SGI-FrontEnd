@@ -7,19 +7,19 @@ export const HeadersPublicationsWorker = [
   },
   {
     heading: 'Revista',
-    value: 'name',
+    value: 'publishedIn',
   },
   {
     heading: 'Autor(es)',
-    value: 'author',
+    value: 'authorsList',
   },
   {
     heading: 'Tipo de recurso',
-    value: 'resourcetype',
+    value: 'resourceTypeCOARName',
   },
   {
     heading: 'Año',
-    value: 'year',
+    value: 'publicationDate',
   },
   /*
   {
@@ -48,7 +48,7 @@ export const HeadersProjectsWorker = [
   },
   {
     heading: 'Estado',
-    value: 'status',
+    value: 'idProjectStatusTypeCONCYTEC',
   },
   {
     heading: 'Tipo de financiamiento',
@@ -73,11 +73,11 @@ export const HeadersProjectsWorker = [
 export const HeadersFundingWorker = [
   {
     heading: 'Nombre del financiamiento',
-    value: 'name',
+    value: 'category',
   },
   {
     heading: 'Identificador',
-    value: 'idfunding',
+    value: 'identifier',
   },
   {
     heading: 'Tipo',
@@ -89,7 +89,7 @@ export const HeadersFundingWorker = [
   },
   {
     heading: 'Entidad financiadora',
-    value: 'orgunitFunded',
+    value: 'fundedBy',
   },
   /*
   {

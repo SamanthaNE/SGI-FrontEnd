@@ -5,23 +5,23 @@ export const HeadersSP = [
   },
   {
     heading: 'Revista',
-    value: 'name',
+    value: 'publicationName',
   },
   {
     heading: 'Autor(es)',
-    value: 'author',
+    value: 'authorsList',
   },
   {
     heading: 'Tipo de documento',
-    value: 'typeD',
+    value: 'subTypeDescription',
   },
   {
     heading: 'Tipo de fuente',
-    value: 'typeS',
+    value: 'aggregationType',
   },
   {
     heading: 'Año',
-    value: 'year',
+    value: 'coverDate',
   },
   {
     heading: 'Acciones',
@@ -38,23 +38,25 @@ export const HeadersSPEval = [
   },
   {
     heading: 'Revista',
-    value: 'name',
+    value: 'publishedIn',
   },
   {
     heading: 'Autor(es)',
-    value: 'author',
+    value: 'authorsList',
   },
   {
     heading: 'Tipo de recurso',
-    value: 'resourcetype',
+    value: 'resourceTypeCOARName',
   },
+  /*
   {
     heading: 'Grupo(s) de Inv.',
     value: 'group',
   },
+  */
   {
     heading: 'Año',
-    value: 'year',
+    value: 'publicationDate',
   },
   {
     heading: 'Acciones',
@@ -69,11 +71,11 @@ export const HeadersGroupsEval= [
   },
   {
     heading: 'Unidad Org.',
-    value: 'orgunit',
+    value: 'namePartOf',
   },
   {
     heading: 'Categoría',
-    value: 'category',
+    value: 'categoryGroup',
   },
   {
     heading: 'Acciones',

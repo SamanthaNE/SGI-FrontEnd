@@ -15,27 +15,37 @@ import {
   setActiveStatus,
   setActiveSubStatus,
   setIsProjectFunded,
-  setIsTeam
+  setIsTeam,
+  setIsParticipating
 } from '../../../redux/slices/curationSlice'
 
-
 const NewProject = () => {
-  const { elementID } = useParams()
-  const navigate = useNavigate()
-  /*
-  const [projectTitle, setProjectTitle] = useState('');
-  const [selectedOptionOrg, setSelectedOptionOrg] = useState('');
-  const [dateStart, setDateStart] = useState('');
-  const [dateEnd, setDateEnd] = useState('');
-  const [activeStatus, setActiveStatus] = useState(null)
-  const [activeSubStatus, setActiveSubStatus] = useState(null)
-  const [isProjectFunded, setIsProjectFunded] = useState(null);
-  const [isTeam, setIsTeam] = useState(null);
-  */
+  const { elementID } = useParams();
+  const navigate = useNavigate();
 
   const [isFinish, setIsFinish] = useState(false);
 
-  const [projectData, setProjectData] = useState([]);
+  const [projectData, setProjectData] = useState
+    ({
+      title: '',
+      startDate: '',
+      endDate: '',
+      idProjectStatusTypeConcytec: '',
+      projectTeamPucp: [
+          {
+              seqMember: '',
+              idPerson: '',
+              idPersonRole: '',
+              idOrgUnit: null,
+              tipoRecurso: ''
+          }
+      ],
+      projectFunded: [
+          {
+              idFunding: ''
+          }
+      ]
+    });
 
   const dispatch = useDispatch()
 
@@ -47,7 +57,8 @@ const NewProject = () => {
     activeStatus,
     activeSubStatus,
     isProjectFunded,
-    isTeam
+    isTeam,
+    isParticipating
   } = useSelector((state) => state.curation.newProject)
 
   const selectedFundings = useSelector((state) => state.curation.selectedFundings)
@@ -62,6 +73,10 @@ const NewProject = () => {
 
   const handleRadioChangeTeam = (e) => {
     dispatch(setIsTeam(e.target.value === 'Yes'))
+  }
+
+  const handleRadioChangeParticipation = (e) => {
+    dispatch(setIsParticipating(e.target.value === 'Yes'))
   }
 
   const handleRadioChangeFunding = (e) => {
@@ -89,7 +104,27 @@ const NewProject = () => {
     console.log(dateStart)
     console.log(dateEnd)
 
-    const results = [];
+    const results = {
+      title: projectTitle,
+      startDate: dateStart,
+      endDate: dateEnd,
+      idProjectStatusTypeConcytec: activeSubStatus,
+      projectTeamPucp: [
+        {
+            seqMember: '',
+            idPerson: '',
+            idPersonRole: '',
+            idOrgUnit: null,
+            tipoRecurso: ''
+        }
+      ],
+      projectFunded: [
+        {
+            idFunding: ''
+        }
+      ]
+    };
+    console.log(results);
     setProjectData(results);
 
     /* ACA DEBE GUARDA LA INFO EN LA DB Y REDIRECCIONAR A LA PAGINA ANTERIOR */
@@ -109,6 +144,7 @@ const NewProject = () => {
                         value={projectTitle} onChange={(e) => dispatch(setProjectTitle(e.target.value))}
             />
           </CForm>
+          {/*
           <CFormSelect  className='mb-3' aria-label="orgunit" label="Unidad organizacional" 
                         value={selectedOptionOrg} onChange={(e) => dispatch(setSelectedOptionOrg(e.target.value))}>
             <option value="">Seleccione una opción</option>
@@ -118,6 +154,7 @@ const NewProject = () => {
               </option>
             ))}
           </CFormSelect>
+          */}
           <CRow className="align-items-end">
             <CCol>
               <DateInput label='Periodo de ejecución estimado' placeholder='Fecha de inicio (DD-MM-AAAA)' 
@@ -152,21 +189,32 @@ const NewProject = () => {
             )
           }
 
-          <div className='text-body-secundary mt-3 mb-1'>Grupo de investigadores a cargo</div>
-            <CFormCheck inline type="radio" name="inlineRadioOptions1" id="cbTeamYes" value="Yes" label="Si" 
-                        onChange={handleRadioChangeTeam} checked={isTeam === true}/>
-            <CFormCheck inline type="radio" name="inlineRadioOptions1" id="cbTeamNo" value="No" label="No" 
-                        onChange={handleRadioChangeTeam} checked={isTeam === false}/>
-            <CFormSelect  className='mb-3' aria-label="orgunit"
+          <div className='text-body-secundary mt-3 mb-1'>¿Forma parte del grupo de investigadores a cargo del proyecto?</div>
+            <CFormCheck inline type="radio" name="inlineRadioOptions1" id="cbParticipatingYes" value="Yes" label="Si" 
+                        onChange={handleRadioChangeParticipation} checked={isParticipating === true}/>
+            <CFormCheck inline type="radio" name="inlineRadioOptions1" id="cbParticipatingNo" value="No" label="No" 
+                        onChange={handleRadioChangeParticipation} checked={isParticipating === false}/>
+            {
+              (isParticipating) && 
+              (
+                <CFormSelect  className='my-3' aria-label="orgunit"
                           /*value={selectedOptionRole} onChange={(e) => dispatch(setSelectedOptionRole(e.target.value))}*/>
-              <option value="">Seleccione una opción</option>
-              {ProjectTeamRoles.map((option) => (
-                <option  key={option.value} value={option.label}>
-                  {option.label}
-                </option>
-              ))}
-            </CFormSelect>
-          
+                  <option value="">Seleccione su rol</option>
+                  {ProjectTeamRoles.map((option, indexPTR) => (
+                    <option  key={indexPTR} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </CFormSelect>
+              )
+            }
+            
+
+          <div className='text-body-secundary mt-3 mb-1'>¿Desea añadir a los demás investigadores a cargo?</div>
+            <CFormCheck inline type="radio" name="inlineRadioOptions2" id="cbTeamYes" value="Yes" label="Si" 
+                        onChange={handleRadioChangeTeam} checked={isTeam === true}/>
+            <CFormCheck inline type="radio" name="inlineRadioOptions2" id="cbTeamNo" value="No" label="No" 
+                        onChange={handleRadioChangeTeam} checked={isTeam === false}/>
           {
             (isTeam) && 
             (
@@ -179,14 +227,13 @@ const NewProject = () => {
                 </CCol>
               </CForm>
             )
-
           }
 
           {/* NO SE SI ES NECESARIO */}
           <div className='text-body-secundary mt-3 mb-1'>¿El proyecto se encuentra financiado?</div>
-          <CFormCheck inline type="radio" name="inlineRadioOptions2" id="cbRProjectYes" value="Yes" label="Si" 
+          <CFormCheck inline type="radio" name="inlineRadioOptions3" id="cbRProjectYes" value="Yes" label="Si" 
                       onChange={handleRadioChangeFunding} checked={isProjectFunded === true}/>
-          <CFormCheck inline type="radio" name="inlineRadioOptions2" id="cbRProjectNo" value="No" label="No" 
+          <CFormCheck inline type="radio" name="inlineRadioOptions3" id="cbRProjectNo" value="No" label="No" 
                       onChange={handleRadioChangeFunding} checked={isProjectFunded === false}/>
 
         </CCardBody>
@@ -196,7 +243,7 @@ const NewProject = () => {
       {
         isProjectFunded &&
         (
-          <TabsSP /*id del autor*/  SPID={elementID} typeTab={"funding"} data={selectedFundings} />
+          <TabsSP SPID={elementID} typeTab={"funding"} data={selectedFundings}/>
         )
       }
 

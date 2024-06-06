@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import FundingFilter from '../../../components/filters/FundingFilter'
 import { CButton, CCol, CRow } from '@coreui/react'
 import InfoSPCheck from '../../../components/cards/InfoSPCheck'
@@ -7,11 +7,41 @@ import HeadersFunding from '../../../data_files/HeadersFunding'
 import { dataFundingSearch } from '../../../data_files/HardData'
 import { useDispatch } from 'react-redux'
 import { setSelectedFundings } from '../../../redux/slices/curationSlice'
+import { KEYCODE } from '../../../config/Constants'
+import axiosInstance from '../../../config/HTTPService'
+import { getUserFromSessionStorage } from '../../../utils/userUtils'
+import LoadingSpinner from '../../../components/spinner/LoadingSpinner'
+
+const user = getUserFromSessionStorage();
 
 const FundingSearch = () => {
   const { elementID } = useParams()
   const navigate = useNavigate()
   const [selectedFundingsLocal, setSelectedFundingsLocal] = useState([]);
+
+  const [dataAPIProjects, setDataAPIProjects] = useState(null);
+  useEffect(() => {
+    const fetchData = async () => {
+        const params = {
+          'keyCode': KEYCODE,
+          'idPerson': user.idPerson ?? 0
+        };
+
+        await axiosInstance.get('api/evaluation/projects', { params })
+                          .then((response) => {
+                            setDataAPIProjects(response.data);
+                            console.log(response.data)
+                          })
+                          .catch((err) => {
+                            let errMsg;
+                            (!err.response) ? errMsg = 'No se pudo conectar con el servidor. Verifique su conexión.' : (err.response.code === 404 ? errMsg = "Servicio no disponible. Intenta más tarde." : errMsg = err.response.data.message);
+                            console.log(errMsg);
+                            setDataAPIProjects({result:[]})
+                          });
+    }
+  
+    fetchData();
+  }, [])
 
   /* REDUX */
   const dispatch = useDispatch();
@@ -35,26 +65,33 @@ const FundingSearch = () => {
       <div className='h4'>Busqueda de financiamientos</div>
 
       <FundingFilter />
+      
+      {
+        dataAPIProjects ?
+        (<>
+            <div className='h5'>Resultados ({dataAPIProjects.total}):</div>
 
-      <div className='h5'>Resultados ({dataFundingSearch.length}):</div>
-
-      <CRow>
-        <CCol>
-          <div className="d-grid gap-2 d-md-block mb-3">
-            <CButton color="primary" className="me-md-2" onClick={handleNavigation}>Agregar</CButton>
-            <CButton color="primary" variant="outline" disabled={selectedFundingsLocal.length === 0} onClick={handleLinkFunding}>Vincular</CButton>
-          </div>
-        </CCol>
-        <CCol className='text-end'>
-            <div className='text-body-secondary'>{selectedFundingsLocal.length} elemento(s) seleccionado(s)</div>
-        </CCol>
-      </CRow>
-        
-      <CRow>
-        <CCol className='mb-3'>
-          <InfoSPCheck data={dataFundingSearch} headers={HeadersFunding} onAction={handleSelection}/>
-        </CCol>
-      </CRow>
+            <CRow>
+              <CCol>
+                <div className="d-grid gap-2 d-md-block mb-3">
+                  <CButton color="primary" className="me-md-2" onClick={handleNavigation}>Agregar</CButton>
+                  <CButton color="primary" variant="outline" disabled={selectedFundingsLocal.length === 0} onClick={handleLinkFunding}>Vincular</CButton>
+                </div>
+              </CCol>
+              <CCol className='text-end'>
+                  <div className='text-body-secondary'>{selectedFundingsLocal.length} elemento(s) seleccionado(s)</div>
+              </CCol>
+            </CRow>
+              
+            <CRow>
+              <CCol className='mb-3'>
+                <InfoSPCheck data={dataAPIProjects.result} headers={HeadersFunding} onAction={handleSelection}/>
+              </CCol>
+            </CRow>
+        </>)
+        :
+        (<LoadingSpinner />)
+      }
     </>
   )
 }

@@ -11,11 +11,11 @@ const InfoProjectDetail = ({data}) => {
             <CCol sm={8} >
               <CRow>
                 <div className="h6 mb-2">Resumen</div>
-                <div className="mb-2 text-body">{data.abstract ?? <em>Sin información disponible</em>}</div>
+                <div className="mb-2 text-body">{data.description ?? <em>Sin información disponible</em>}</div>
               </CRow>
               <CRow>
                 <CCol sm={3} className="h6">Estado</CCol>
-                <CCol className="text-body">{data.status ?? "-"}</CCol>
+                <CCol className="text-body">{data.idProjectStatusTypeCONCYTEC ?? <em>Sin información disponible</em>}</CCol>
               </CRow>
               <CRow>
                 <CCol sm={3} className="h6">Fecha de inicio</CCol>
@@ -27,10 +27,10 @@ const InfoProjectDetail = ({data}) => {
               </CRow>
               <CRow className="mb-2">
                 <div className="h6 mb-2">Equipo encargado del proyecto</div>
-                {data.project_team.length > 0 ?
-                  data.project_team.map((teamItems, indexT) => {
+                {data.researchers ?
+                  data.researchers.map((teamItems, indexT) => {
                     return (
-                      <div className="text-body" key={indexT}>{indexT + 1}. {teamItems.name} - {teamItems.Tipo_Recurso}</div>
+                      <div className="text-body" key={indexT}>{indexT + 1}. {teamItems.firstNames} {teamItems.familyNames} - {teamItems.idRolePerson}</div>
                     )
                   })
                   :
@@ -42,7 +42,7 @@ const InfoProjectDetail = ({data}) => {
             <CCol sm={4} className='custom-border-padding'>
               <CRow className="mb-2">
                 <div className="h6 mb-2">Grupo(s) de investigación</div>
-                {data.group.length > 0 ?
+                {data.group && Array.isArray(data.group) ?
                   data.group.map((groupItems, indexG) => {
                     return (
                       <div className="text-body" key={indexG}>{groupItems.name}</div>

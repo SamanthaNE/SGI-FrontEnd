@@ -1,6 +1,5 @@
 import React, { Suspense } from 'react'
-import { HashRouter, Route, Routes } from 'react-router-dom'
-import { UserProvider } from './context/UserContext';
+import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { CSpinner } from '@coreui/react'
 import './scss/style.scss'
 
@@ -13,24 +12,23 @@ const Login = React.lazy(() => import('./features/login/Login'))
 const App = () => {
 
   return (
-    //<UserProvider>
-      <HashRouter>
-        <Suspense
-          fallback={
-            <div className="pt-3 text-center">
-              <CSpinner color="primary" variant="grow" />
-            </div>
-          }
-        >
-          
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="*" element={<DefaultLayout />} />
-        </Routes>
-          
-        </Suspense>
-      </HashRouter>
-    //</UserProvider>
+    <HashRouter>
+      <Suspense
+        fallback={
+          <div className="pt-3 text-center">
+            <CSpinner color="primary" variant="grow" />
+          </div>
+        }
+      >
+        
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="*" element={<DefaultLayout />} />
+      </Routes>
+        
+      </Suspense>
+    </HashRouter>
   )
 }
 

@@ -1,40 +1,63 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { CButton, CCard, CCardBody, CCol, CContainer, CForm, CFormInput, CInputGroup, CInputGroupText, CRow, } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
-import { UserContext } from '../../context/UserContext'
+import { KEYCODE } from '../../config/Constants'
+import axiosInstance from '../../config/HTTPService'
+import { useDispatch } from 'react-redux'
+import { addUser } from '../../redux/slices/userSlice'
 
 const Login = ({ onLogin }) => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  /* Simulación de autenticación */
   const navigate = useNavigate();
-  const { login } = useContext(UserContext);
+  const dispatch = useDispatch();
   
-  const handleLogin = (e) => {
+  const handleLogin = async(e) => {
     e.preventDefault();
 
-    if (username === 'investigador' && password === '1234') {
-      //login({ username, role: 'Investigador' });
-      sessionStorage.setItem('user', JSON.stringify({ username, role: 'Investigador' }));
+    try {
+      const params = {
+        'keyCode': KEYCODE,
+        'email': email,
+        'password': password
+      };
 
-      navigate('/publicaciones/revision');
-    } else if (username === 'trabajador' && password === '1234') {
+      const response = await axiosInstance.post('api/users/login', params);
       
-      //login({ username, role: 'Trabajador' });
+      if (response.data) {
+        console.log(response.data.userInfo[0])
+        const userInfo = response.data.userInfo[0];
+        const user = {
+            name: userInfo.firstNames + ' ' + userInfo.familyNames,
+            email: userInfo.email,
+            role: userInfo.roleName,
+            idPerson: userInfo.idPerson,
+            scopusAuthorId: userInfo.scopusAuthorId
+        };
 
-      sessionStorage.setItem('user', JSON.stringify({ username, role: 'Trabajador' }));
+        sessionStorage.setItem('user', JSON.stringify(user));
+        dispatch(addUser(user));
 
-      navigate('/publicaciones/historico');
-    } else {
-      setError('Credenciales incorrectas');
-      setPassword('');
+        if(userInfo.roleName === 'Investigador'){
+          navigate('/publicaciones/revision');
+        } else{
+          navigate('/publicaciones/historico');
+        }
+        
+      } else {
+        setError(response.data.message || 'Credenciales incorrectas');
+        setPassword('');
+      }
+      
+    } catch (error) {
+      console.error('Error:', error);
+      setError('Error al iniciar sesión');
     }
   };
-  /* Simulación de autenticación */
 
   return (
     <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
@@ -52,9 +75,9 @@ const Login = ({ onLogin }) => {
                     </CInputGroupText>
                     <CFormInput 
                       placeholder="Correo electrónico" 
-                      autoComplete="username" 
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
+                      autoComplete="email" 
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                     />
                   </CInputGroup>
                   <CInputGroup className="mb-4">

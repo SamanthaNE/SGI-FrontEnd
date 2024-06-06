@@ -90,20 +90,41 @@ const InfoSP = ({data, headers, btnnav, detail, btnmore = "", pagesize = 5}) => 
                         <CCol key={indexH} className = {indexH == 0 ? ("col-4") : (null)}>
                           {headerItems.value === 'actions' ? 
                           (
-                            <CButton color="primary" variant="ghost" value={obj.id} onClick={handleNavigationAction}>
+                            <CButton color="primary" variant="ghost" value={obj.scopusPublicationId || obj.idOrgUnit || obj.idProject || obj.publicationId} onClick={handleNavigationAction}>
                               {detail === true ? "Ver detalle" : "--"}
                             </CButton>
                           )
                           :
                           (
-                            headerItems.value === 'author' ? 
-                            (obj.author.map((authorItems, indexA) => {
+                            headerItems.value === 'authorsList' ? 
+                            (obj.authorsList.map((authorItems, indexA) => {
                               return (
-                                <CCardText className='my-0' key={indexA}>{authorItems.name}</CCardText>
+                                <CCardText className='my-0' key={indexA}>{authorItems.authorName || authorItems.givenName + " " + authorItems.surname}</CCardText>
                               )
                             }))
                             :
-                            (<CCardText>{obj[`${headerItems.value}`]}</CCardText>)
+                            headerItems.value === 'fundingType' && obj.relatedFundingList ? 
+                            (obj.relatedFundingList.map((fundingItems, indexF) => {
+                              return (
+                                <CCardText className='my-0' key={indexF}>{fundingItems.fundingType}</CCardText>
+                              )
+                            }))
+                            :
+                            headerItems.value === 'amount' ? 
+                            (obj.relatedFundingList ?
+                              obj.relatedFundingList.map((fundingItems, indexF) => {
+                                return (
+                                  <CCardText className='my-0' key={indexF}>{fundingItems.currCode + " " + fundingItems.amount}</CCardText>
+                                )
+                              })
+                              :
+                              (<CCardText className='my-0'>{obj.currCode + " " + obj.amount}</CCardText>)
+                            )
+                            :
+                            obj[`${headerItems.value}`] === "" ?
+                            (<CCardText>{<i>Sin {headerItems.heading}</i>}</CCardText>)
+                            :
+                            (<CCardText>{obj[`${headerItems.value}`] ?? <i>Sin información</i>}</CCardText>)
                           )
                           }
                         </CCol>
@@ -130,14 +151,14 @@ const InfoSP = ({data, headers, btnnav, detail, btnmore = "", pagesize = 5}) => 
                         )
                         :
                         (
-                          headerItems.value === 'author' ? 
-                          (currentData.author.map((authorItems, indexA) => {
+                          headerItems.value === 'authorsList' ? 
+                          (currentData.authorsList.map((authorItems, indexA) => {
                             return (
-                              <CCardText className='my-0' key={indexA}>{authorItems.name}</CCardText>
+                              <CCardText className='my-0' key={indexA}>{authorItems.authorName}</CCardText>
                             )
                           }))
                           :
-                          (<CCardText>{currentData[`${headerItems.value}`]}</CCardText>)
+                          (<CCardText>{currentData[`${headerItems.value}`] ?? <i>Sin información</i>}</CCardText>)
                         )
                         }
                       </CCol>
@@ -150,7 +171,6 @@ const InfoSP = ({data, headers, btnnav, detail, btnmore = "", pagesize = 5}) => 
         }
         
         {/* PAGINATION */}
-        {/* MODIFICAR: DINAMICO CON LA CANTIDAD DE RESULTADOS */}
         {(data.length > pagesize) && 
         (
           <nav aria-label="pageNav" className='mt-2'>

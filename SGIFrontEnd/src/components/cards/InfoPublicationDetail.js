@@ -11,27 +11,27 @@ const InfoPublicationDetail = ({data, validation = true}) => {
             <CCol sm={validation === true ? 8 : 12} >
               <CRow>
                 <div className="h6 mb-2">Resumen</div>
-                <div className="mb-2 text-body">{data.abstract ?? "-"}</div>
+                <div className="mb-2 text-body">{data.abstractPublication ?? "-"}</div>
               </CRow>
               <CRow>
                 <CCol sm={3} className="h6">Tipo de recurso</CCol>
-                <CCol className="text-body">{data.resourcetype ?? "-"}</CCol>
+                <CCol className="text-body">{data.resourceTypeCOARName ?? "-"}</CCol>
               </CRow>
               <CRow>
                 <CCol sm={3} className="h6">Nombre de la revista</CCol>
-                <CCol className="text-body">{data.name ?? "-"}</CCol>
+                <CCol className="text-body">{data.publishedIn ?? "-"}</CCol>
               </CRow>
               <CRow>
                 <CCol sm={3} className="h6">Volumen</CCol>
-                <CCol className="text-body">{data.volumen ?? "-"}</CCol>
+                <CCol className="text-body">{data.volume ?? "-"}</CCol>
               </CRow>
               <CRow>
                 <CCol sm={3} className="h6">Rango de páginas</CCol>
-                <CCol className="text-body">{data.page_range ?? "-"}</CCol>
+                <CCol className="text-body">{(data.startPage ?? "-") + " " + (data.endPage ?? "-")}</CCol>
               </CRow>
               <CRow>
                 <CCol sm={3} className="h6">Año</CCol>
-                <CCol className="text-body">{data.year ?? "-"}</CCol>
+                <CCol className="text-body">{data.publicationDate ?? "-"}</CCol>
               </CRow>
             </CCol>
           {
@@ -40,22 +40,26 @@ const InfoPublicationDetail = ({data, validation = true}) => {
               <CCol sm={4} className='custom-border-padding'>
                 <CRow className="mb-2">
                   <div className="h6 mb-2">Autores</div>
-                  {data.author.map((authorItems, indexA) => {
-                    return (
-                      <div className="text-body" key={indexA}>{indexA + 1}. {authorItems.name}</div>
-                    )
-                  })}
-                </CRow>
-                <CRow className="mb-2">
-                  <div className="h6 mb-2">Grupo(s) de investigación</div>
-                  {data.group.length > 0 ?
-                    data.group.map((groupItems, indexG) => {
+                  {data.authorsList ?
+                    data.authorsList.map((authorItems, indexA) => {
                       return (
-                        <div className="text-body" key={indexG}>{groupItems.name}</div>
+                        <div className="text-body" key={indexA}>{indexA + 1}. {authorItems.givenName} {authorItems.surname}</div>
                       )
                     })
                     :
                     <div className="text-body"><em>No asignado</em></div>
+                  }
+                </CRow>
+                <CRow className="mb-2">
+                  <div className="h6 mb-2">Grupo(s) de investigación</div>
+                  {data.group && Array.isArray(data.group) ?
+                    (data.group.map((groupItems, indexG) => {
+                      return (
+                        <div className="text-body" key={indexG}>{groupItems.name}</div>
+                      )
+                    }))
+                    :
+                    (<div className="text-body"><em>No asignado</em></div>)
                   }
                 </CRow>
                 <CRow className="mb-2">
