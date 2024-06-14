@@ -16,38 +16,23 @@ import {
   setActiveSubStatus,
   setIsProjectFunded,
   setIsTeam,
-  setIsParticipating
+  setIsParticipating,
+  setTeamProject,
+  setSelectedPersonalRole,
+  setSelectedProjects
 } from '../../../redux/slices/curationSlice'
+import { KEYCODE } from '../../../config/Constants'
+import { getUserFromSessionStorage } from '../../../utils/userUtils'
+import axiosInstance from '../../../config/HTTPService'
+
+const user = getUserFromSessionStorage();
 
 const NewProject = () => {
   const { elementID } = useParams();
   const navigate = useNavigate();
-
-  const [isFinish, setIsFinish] = useState(false);
-
-  const [projectData, setProjectData] = useState
-    ({
-      title: '',
-      startDate: '',
-      endDate: '',
-      idProjectStatusTypeConcytec: '',
-      projectTeamPucp: [
-          {
-              seqMember: '',
-              idPerson: '',
-              idPersonRole: '',
-              idOrgUnit: null,
-              tipoRecurso: ''
-          }
-      ],
-      projectFunded: [
-          {
-              idFunding: ''
-          }
-      ]
-    });
-
   const dispatch = useDispatch()
+
+  const currentProject = useSelector(state => state.curation.selectedProjects);
 
   const { 
     projectTitle,
@@ -58,10 +43,13 @@ const NewProject = () => {
     activeSubStatus,
     isProjectFunded,
     isTeam,
-    isParticipating
+    isParticipating,
+    selectedFundings,
+    teamProject,
+    selectedPersonalRole
   } = useSelector((state) => state.curation.newProject)
 
-  const selectedFundings = useSelector((state) => state.curation.selectedFundings)
+  const currentTeam = useSelector(state => state.curation.newProject.teamProject);
 
   const handleStatus = (e) => {
     dispatch(setActiveStatus(e.target.value))
@@ -81,53 +69,72 @@ const NewProject = () => {
 
   const handleRadioChangeFunding = (e) => {
     dispatch(setIsProjectFunded(e.target.value === 'Yes'))
-    setIsFinish(true);
   };
   
   const handleDateStartChange = (newDate) => {
-    console.log(newDate)
     dispatch(setDateStart(newDate))
   };
 
   const handleDateEndChange = (newDate) => {
-    console.log(newDate)
     dispatch(setDateEnd(newDate))
   };
 
-  const handleProjectData = () => {
-    console.log(activeStatus);
-    console.log(activeSubStatus);
-    console.log(isProjectFunded);
-    console.log(isTeam);
-    console.log(projectTitle);
-    console.log(selectedOptionOrg);
-    console.log(dateStart)
-    console.log(dateEnd)
+  const handleSelectedPersonalRole = (e) => { 
+    dispatch(setSelectedPersonalRole(e.target.value))
 
-    const results = {
+    const data = {
+      idPerson: user.idPerson,
+      idPersonRole: e.target.value,
+    }
+
+    const updatedTeam = [...currentTeam, data];
+
+    dispatch(setTeamProject(updatedTeam));
+  }
+
+  const handleProjectData = async(e) => {
+    console.log(selectedFundings)
+    
+    const params = {
+      keyCode: KEYCODE,
       title: projectTitle,
       startDate: dateStart,
       endDate: dateEnd,
       idProjectStatusTypeConcytec: activeSubStatus,
-      projectTeamPucp: [
-        {
-            seqMember: '',
-            idPerson: '',
-            idPersonRole: '',
-            idOrgUnit: null,
-            tipoRecurso: ''
-        }
-      ],
-      projectFunded: [
-        {
-            idFunding: ''
-        }
-      ]
+      funding: selectedFundings,
+      projectTeam: teamProject,
     };
-    console.log(results);
-    setProjectData(results);
 
-    /* ACA DEBE GUARDA LA INFO EN LA DB Y REDIRECCIONAR A LA PAGINA ANTERIOR */
+    try {
+      const response = await axiosInstance.post('api/scopus/newproject', params);
+      
+      if (response.data) {
+        const idProject = response.data.newProjectDto.project.idProject;
+
+        const dataProject = {
+          idProject: idProject,
+          title: projectTitle,
+          startDate: dateStart,
+          endDate: dateEnd,
+          idProjectStatusTypeCONCYTEC: activeSubStatus,
+          relatedFundingList: selectedFundings
+        };
+
+        const updatedProject = [...currentProject, dataProject];
+        console.log(updatedProject)
+
+        dispatch(setSelectedProjects(updatedProject));
+
+        navigate('/publicaciones/revision/detalle/' + `${elementID}`)
+      } else {
+        setError(response.data.message || 'No se pudo registrar el proyecto con su(s) financiamiento(s)');
+      }
+      
+    } catch (error) {
+      console.error('Error:', error);
+      setError('No se pudo registrar el proyecto con su(s) financiamiento(s)');
+    }
+
   };
 
   return (
@@ -198,7 +205,7 @@ const NewProject = () => {
               (isParticipating) && 
               (
                 <CFormSelect  className='my-3' aria-label="orgunit"
-                          /*value={selectedOptionRole} onChange={(e) => dispatch(setSelectedOptionRole(e.target.value))}*/>
+                              value={selectedPersonalRole} onChange={handleSelectedPersonalRole}>
                   <option value="">Seleccione su rol</option>
                   {ProjectTeamRoles.map((option, indexPTR) => (
                     <option  key={indexPTR} value={option.value}>
@@ -210,7 +217,7 @@ const NewProject = () => {
             }
             
 
-          <div className='text-body-secundary mt-3 mb-1'>¿Desea añadir a los demás investigadores a cargo?</div>
+          <div className='text-body-secundary mt-3 mb-1'>¿Desea añadir a los demás investigadores a cargo del proyecto?</div>
             <CFormCheck inline type="radio" name="inlineRadioOptions2" id="cbTeamYes" value="Yes" label="Si" 
                         onChange={handleRadioChangeTeam} checked={isTeam === true}/>
             <CFormCheck inline type="radio" name="inlineRadioOptions2" id="cbTeamNo" value="No" label="No" 
@@ -218,14 +225,15 @@ const NewProject = () => {
           {
             (isTeam) && 
             (
-              <CForm className="row my-3">
+              <CRow className="align-items-end my-3">
                 <CCol xs={11}>
                   <CFormInput type="text" id="teamSearch" placeholder="Nombre del investigador" />
                 </CCol>
                 <CCol xs={1}>
                   <CButton color="primary" type="submit">Buscar</CButton>
                 </CCol>
-              </CForm>
+
+              </CRow>
             )
           }
 
@@ -248,15 +256,12 @@ const NewProject = () => {
       }
 
       {/* FINISH REV */}
-      {
-        isFinish && 
-        (
-          <div className="d-grid gap-2 d-md-flex justify-content-md-end mt-3 mb-4">
-            <CButton color="primary" variant="outline" className="me-md-2" onClick={() =>navigate(-1)}>Cancelar</CButton>
-            <CButton color="primary" disabled={isProjectFunded} onClick={handleProjectData}>Guardar</CButton>
-          </div>
-        )
-      }
+
+      <div className="d-grid gap-2 d-md-flex justify-content-md-end mt-3 mb-4">
+        <CButton color="primary" variant="outline" className="me-md-2" onClick={() =>navigate(-1)}>Cancelar</CButton>
+        <CButton color="primary" disabled={selectedFundings.length > 0 ? false : isProjectFunded} onClick={handleProjectData}>Guardar</CButton>
+      </div>
+
     </>
   )
 }

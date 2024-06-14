@@ -10,6 +10,7 @@ import {
   setIsPrincipalAuthor,
   setIsRelatedProject,
   setSelectedGroups,
+  setSelectedOptionGroup,
   setSelectedOptionAuthor,
 } from '../../../redux/slices/curationSlice'
 import { KEYCODE } from '../../../config/Constants'
@@ -34,10 +35,9 @@ const SPDataCuration = () => {
     isRelatedProject,
     selectedGroups,
     selectedOptionAuthor,
-    selectedProjects
+    selectedProjects,
+    selectedOptionGroup
   } = useSelector((state) => state.curation)
-
-  const [revisionData, setRevisionData] = useState([]);
 
   useEffect(() => {
     if (isPrincipalAuthor !== null) {
@@ -101,10 +101,13 @@ const SPDataCuration = () => {
   }
 
   const handleGroupChange = (e) => {
+    dispatch(setSelectedOptionGroup(e.target.value))
+    /*
     const { checked, value } = e.target;
     const newSelectedGroups = checked ? [...selectedGroups, value] : selectedGroups.filter((group) => group !== value);
 
     dispatch(setSelectedGroups(newSelectedGroups))
+    */
   };
 
   const handleRadioChangeProject = (e) => {
@@ -112,13 +115,32 @@ const SPDataCuration = () => {
     dispatch(setIsRelatedProject(e.target.value === 'Yes'));
   };
 
-  const handleRevision = () => {
-    console.log(isPrincipalAuthor);
-    console.log(selectedGroups);
-    console.log(selectedOptionAuthor);
+  const handleRevision = async(e) => {
+    const params = {
+      keyCode: KEYCODE,
+      scopusPublicationId: elementID,
+      scopusAuthorId: user.scopusAuthorId,
+      idPerson: user.idPerson,
+      researchGroupIdOrg: selectedOptionGroup,
+      projectIds: selectedProjects.length > 0 ? selectedProjects.map(project => project.idProject) : []
+    }
+    console.log(params)
 
-    const results = [];
-    setRevisionData(results);
+    try {
+      const response = await axiosInstance.post('api/scopus/newpublication', params);
+      
+      if (response.data) {
+        console.log(response.data)
+        navigate('/publicaciones/revision')
+      } else {
+        setError(response.data.message || 'No se pudo terminar correctamente la revisión de la publicación');
+      }
+      
+    } catch (error) {
+      console.error('Error:', error);
+      setError('No se pudo terminar correctamente la revisión de la publicación');
+    }
+
   };
 
   return (
@@ -173,9 +195,14 @@ const SPDataCuration = () => {
                     <CCardSubtitle className="mb-3 text-body-secondary">¿A que grupo de investigación pertenece la publicación?</CCardSubtitle>
                     {dataAPIGroups.result.map((groupsItems, indexH) => {
                       return (
+                        <CFormCheck key={indexH} button={{ color: 'primary', variant: 'outline' }} type="radio" 
+                                    id={groupsItems.acronym} label={groupsItems.acronym} onChange={handleGroupChange} 
+                                    checked={selectedOptionGroup === groupsItems.idOrgUnit} value={groupsItems.idOrgUnit}/>
+                        /*            
                         <CFormCheck key={indexH} button={{ color: 'primary', variant: 'outline' }} id={`${indexH}`} 
                                     label={groupsItems.acronym} onChange={handleGroupChange} 
                                     checked={selectedGroups.includes(groupsItems.idOrgUnit)} value={groupsItems.idOrgUnit}/>
+                        */
                       )
                     })}
                   </CCardBody>
@@ -211,7 +238,7 @@ const SPDataCuration = () => {
               (
               <div className="d-grid gap-2 d-md-flex justify-content-md-end mt-3 mb-4">
                 <CButton color="primary" variant="outline" className="me-md-2" onClick={() =>navigate(-1)}>Cancelar</CButton>
-                <CButton color="primary" onClick={handleRevision} disabled={isRelatedProject}>Terminar revisión</CButton>
+                <CButton color="primary" onClick={handleRevision} disabled={selectedProjects.length > 0 ? false : isRelatedProject}>Terminar revisión</CButton>
               </div>
               )
             }

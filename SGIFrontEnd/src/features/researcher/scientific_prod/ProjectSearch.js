@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import ProjectsFilter from '../../../components/filters/ProjectsFilter'
 import { CButton, CCol, CRow } from '@coreui/react'
-import InfoSPCheck from '../../../components/cards/InfoSPCheck'
 import { useNavigate, useParams } from 'react-router-dom'
-import { dataProjectSearch } from '../../../data_files/HardData'
 import { HeadersProject } from '../../../data_files/HeadersProject'
 import { setSelectedProjects } from '../../../redux/slices/curationSlice'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { getUserFromSessionStorage } from '../../../utils/userUtils'
 import { KEYCODE } from '../../../config/Constants'
 import axiosInstance from '../../../config/HTTPService'
 import LoadingSpinner from '../../../components/spinner/LoadingSpinner'
+import InfoProjectCheck from '../../../components/cards/InfoProjectCheck'
 
 const user = getUserFromSessionStorage();
 
@@ -47,13 +46,16 @@ const ProjectSearch = () => {
 
   /* REDUX */
   const dispatch = useDispatch();
+  const { selectedProjects } = useSelector((state) => state.curation)
 
   const handleSelection = (dataCC) => {
     setSelectedProjectsLocal(dataCC)
   }
 
   const handleLinkProject = () => {
-    dispatch(setSelectedProjects(selectedProjectsLocal));
+    const updatedProjects = [...selectedProjects, ...selectedProjectsLocal];
+
+    dispatch(setSelectedProjects(updatedProjects));
     navigate(-1)
   }
 
@@ -85,7 +87,7 @@ const ProjectSearch = () => {
             </CRow>
             <CRow>
               <CCol className='mb-3'>
-                <InfoSPCheck data={dataAPIProjects.result} headers={HeadersProject} onAction={handleSelection}/>
+                <InfoProjectCheck data={dataAPIProjects.result} headers={HeadersProject} onAction={handleSelection}/>
               </CCol>
             </CRow>
         </>)

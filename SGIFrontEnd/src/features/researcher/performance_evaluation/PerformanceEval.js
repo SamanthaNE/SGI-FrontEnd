@@ -24,6 +24,7 @@ const PerformanceEval = () => {
   const [dataAPIPublications, setDataAPIPublications] = useState(null);
   const [dataAPIProjects, setDataAPIProjects] = useState(null);
   const [dataAPIGroups, setDataAPIGroups] = useState(null);
+  const [dataTotalFunding, setDataTotalFunding] = useState(null);
 
   // PUBLICATIONS
   useEffect(() => {
@@ -59,6 +60,7 @@ const PerformanceEval = () => {
         await axiosInstance.get('api/evaluation/projects', { params })
                           .then((response) => {
                             setDataAPIProjects(response.data);
+                            setDataTotalFunding(response.data.result.filter(project => project.relatedFundingList && project.relatedFundingList.length > 0).length)
                           })
                           .catch((err) => {
                             let errMsg;
@@ -102,25 +104,25 @@ const PerformanceEval = () => {
         <CCard className='mx-2 rounded' onClick={() => handleCardClick('publications')} color={selectedCard === 'publications' ? 'primary' : ''} textColor={selectedCard === 'publications' ? 'white' : 'black'}>
           <CCardBody>
             <div className='h4 text-center'>Publicaciones</div>
-            <div className='h1 text-center'>50{/*CON API*/}</div>
+            <div className='h1 text-center'>{dataAPIPublications ? dataAPIPublications.total : "..."}</div>
           </CCardBody>
         </CCard>
         <CCard className='mx-2 rounded' onClick={() => handleCardClick('groups')} color={selectedCard === 'groups' ? 'primary' : ''} textColor={selectedCard === 'groups' ? 'white' : 'black'}>
           <CCardBody>
             <div className='h4 text-center'>Grupos de investigación</div>
-            <div className='h1 text-center'>5{/*CON API*/}</div>
+            <div className='h1 text-center'>{dataAPIGroups ? dataAPIGroups.total : "..."}</div>
           </CCardBody>
         </CCard>
         <CCard className='mx-2 rounded' onClick={() => handleCardClick('projects')} color={selectedCard === 'projects' ? 'primary' : ''} textColor={selectedCard === 'projects' ? 'white' : 'black'}>
           <CCardBody>
             <div className='h4 text-center'>Proyectos</div>
-            <div className='h1 text-center'>3{/*CON API*/}</div>
+            <div className='h1 text-center'>{dataAPIProjects ? dataAPIProjects.total : "..."}</div>
           </CCardBody>
         </CCard>
         <CCard className='mx-2 rounded'>
           <CCardBody>
-            <div className='h4 text-center'>Total de financiamiento</div>
-            <div className='h1 text-center'>2{/*CON API*/}</div>
+            <div className='h4 text-center'>Total de financiamientos</div>
+            <div className='h1 text-center'>{dataTotalFunding ? dataTotalFunding : "..."}</div>
           </CCardBody>
         </CCard>
         <CCard className='mx-2 rounded'>

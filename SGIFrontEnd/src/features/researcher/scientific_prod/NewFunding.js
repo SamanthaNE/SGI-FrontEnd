@@ -1,11 +1,16 @@
 import { CButton, CCard, CCardBody, CCardSubtitle, CCol, CForm, CFormInput, CFormSelect, CRow } from '@coreui/react'
 import React, { useState } from 'react'
 import { Currency, FFOrg, FundedAs, PFFunding } from '../../../data_files/FiltersData';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { KEYCODE } from '../../../config/Constants'
+
+import { setSelectedFundings } from '../../../redux/slices/curationSlice'
+import { useDispatch, useSelector } from 'react-redux'
 
 const NewFunding = () => {
   const navigate = useNavigate()
+  const { elementID } = useParams();
+
   const [fundingName, setFundingName] = useState('');
   const [selectedOptionFunding, setSelectedOptionFunding] = useState('');
   const [selectedOptionCurrency, setSelectedOptionCurrency] = useState('');
@@ -22,20 +27,23 @@ const NewFunding = () => {
     }
   };
 
+  const currentFundings = useSelector(state => state.curation.newProject.selectedFundings);
+  const dispatch = useDispatch();
+
   const handleFundingData = () => {
-    const params = {
-      keyCode: KEYCODE,
+    const data = {
       fundedAs: selectedOptionFundedAs,
-      categoria: fundingName,
+      category: fundingName,
       currCode: selectedOptionCurrency,
       amount: fundingAmount,
-      idFundingType: selectedOptionFunding,
-      idOrgUnit: selectedOptionOrg
+      fundingType: selectedOptionFunding,
+      fundedBy: selectedOptionOrg
     };
 
-    console.log(params)
+    const updatedFundings = [...currentFundings, data];
 
-    /* ACA DEBE GUARDA LA INFO EN LA DB Y REDIRECCIONAR A LA PAGINA ANTERIOR */
+    dispatch(setSelectedFundings(updatedFundings));
+    navigate('/publicaciones/revision/detalle/' + `${elementID}` + '/proyectos/nuevo');
   };
 
   return (

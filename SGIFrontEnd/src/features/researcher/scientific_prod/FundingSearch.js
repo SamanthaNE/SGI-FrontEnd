@@ -1,33 +1,36 @@
 import React, { useEffect, useState } from 'react'
 import FundingFilter from '../../../components/filters/FundingFilter'
 import { CButton, CCol, CRow } from '@coreui/react'
-import InfoSPCheck from '../../../components/cards/InfoSPCheck'
 import { useNavigate, useParams } from 'react-router-dom'
 import HeadersFunding from '../../../data_files/HeadersFunding'
-import { dataFundingSearch } from '../../../data_files/HardData'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setSelectedFundings } from '../../../redux/slices/curationSlice'
 import { KEYCODE } from '../../../config/Constants'
 import axiosInstance from '../../../config/HTTPService'
 import { getUserFromSessionStorage } from '../../../utils/userUtils'
 import LoadingSpinner from '../../../components/spinner/LoadingSpinner'
+import InfoFundingCheck from '../../../components/cards/InfoFundingCheck'
 
 const user = getUserFromSessionStorage();
 
 const FundingSearch = () => {
   const { elementID } = useParams()
   const navigate = useNavigate()
-  const [selectedFundingsLocal, setSelectedFundingsLocal] = useState([]);
+  const { selectedFundings } = useSelector((state) => state.curation.newProject)
+
+  const [selectedFundingsLocal, setSelectedFundingsLocal] = useState(selectedFundings);
 
   const [dataAPIProjects, setDataAPIProjects] = useState(null);
   useEffect(() => {
     const fetchData = async () => {
+      console.log(user.idPerson)
         const params = {
           'keyCode': KEYCODE,
+          'idProject': 0,
           'idPerson': user.idPerson ?? 0
         };
 
-        await axiosInstance.get('api/evaluation/projects', { params })
+        await axiosInstance.get('api/evaluation/funding', { params })
                           .then((response) => {
                             setDataAPIProjects(response.data);
                             console.log(response.data)
@@ -85,7 +88,7 @@ const FundingSearch = () => {
               
             <CRow>
               <CCol className='mb-3'>
-                <InfoSPCheck data={dataAPIProjects.result} headers={HeadersFunding} onAction={handleSelection}/>
+                <InfoFundingCheck data={dataAPIProjects.result} headers={HeadersFunding} onAction={handleSelection}/>
               </CCol>
             </CRow>
         </>)

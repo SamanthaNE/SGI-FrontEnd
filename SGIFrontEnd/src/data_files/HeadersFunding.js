@@ -1,11 +1,11 @@
 const HeadersFunding = [
   {
     heading: 'Nombre del financiamiento',
-    value: 'name',
+    value: 'category',
   },
   {
     heading: 'Identificador',
-    value: 'idfunding',
+    value: 'identifier',
   },
   {
     heading: 'Tipo',
@@ -17,7 +17,7 @@ const HeadersFunding = [
   },
   {
     heading: 'Entidad financiadora',
-    value: 'orgunitFunded',
+    value: 'fundedBy',
   },
 ]
 

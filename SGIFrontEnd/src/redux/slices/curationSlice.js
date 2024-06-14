@@ -4,6 +4,7 @@ const initialState = {
   isPrincipalAuthor: null,
   isRelatedProject: null,
   selectedGroups: [],
+  selectedOptionGroup: null,
   selectedOptionAuthor: '',
   selectedProjects: [],
   newProject: {
@@ -15,9 +16,11 @@ const initialState = {
     activeSubStatus: null,
     isProjectFunded: null,
     isParticipating: null,
-    isTeam: null
+    isTeam: null,
+    selectedFundings: [],
+    teamProject: [],
+    selectedPersonalRole: null
   },
-  selectedFundings: [],
 }
 
 const curationSlice = createSlice({
@@ -38,6 +41,9 @@ const curationSlice = createSlice({
     },
     setSelectedProjects: (state, action) => {
       state.selectedProjects = action.payload
+    },
+    setSelectedOptionGroup: (state, action) => {
+      state.selectedOptionGroup = action.payload
     },
     setProjectTitle: (state, action) => {
       state.newProject.projectTitle = action.payload
@@ -67,7 +73,13 @@ const curationSlice = createSlice({
       state.newProject.isParticipating = action.payload
     },
     setSelectedFundings: (state, action) => {
-      state.selectedFundings = action.payload
+      state.newProject.selectedFundings = action.payload
+    },
+    setTeamProject: (state, action) => {
+      state.newProject.teamProject = action.payload
+    },
+    setSelectedPersonalRole: (state, action) => {
+      state.newProject.selectedPersonalRole = action.payload
     },
   },
 })
@@ -76,6 +88,7 @@ export const {
   setIsPrincipalAuthor,
   setIsRelatedProject,
   setSelectedGroups,
+  setSelectedOptionGroup,
   setSelectedOptionAuthor,
   setSelectedProjects,
   setProjectTitle,
@@ -87,7 +100,9 @@ export const {
   setIsProjectFunded,
   setIsTeam,
   setIsParticipating,
-  setSelectedFundings
+  setSelectedFundings,
+  setTeamProject,
+  setSelectedPersonalRole
 } = curationSlice.actions
 
 export default curationSlice.reducer

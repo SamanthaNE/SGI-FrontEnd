@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
 import { CCard, CCardBody, CCardText, CCol, CFormCheck, CRow } from '@coreui/react'
 
-const InfoSPCheck = ({data, headers, onAction, pagesize = 5}) => {
+const InfoFundingCheck = ({data, headers, onAction, pagesize = 5}) => {
   const [selectedSP, setSelectedSP] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
 
   const handleSelection = (selectedObj) => {
-    const selectedId = selectedObj.idProject;
+    const selectedId = selectedObj.idFunding;
     let newSelected;
 
-    if (selectedSP.some(obj => obj.id === selectedId)) {
-      newSelected = selectedSP.filter(obj => obj.id !== selectedId);
+    if (selectedSP.some(obj => obj.idFunding === selectedId)) {
+      newSelected = selectedSP.filter(obj => obj.idFunding !== selectedId);
     } else {
       newSelected = [...selectedSP, selectedObj];
     }
@@ -89,7 +89,7 @@ const InfoSPCheck = ({data, headers, onAction, pagesize = 5}) => {
           <CCard key={indexR} className='mt-1'>
             <CCardBody>
               <CRow>
-                {<CFormCheck id="checkboxNoLabel" onChange={() => handleSelection(obj)} checked={selectedSP.some(selectedObj => selectedObj.idProject === obj.idProject)}/>}
+                {<CFormCheck id="checkboxNoLabel" onChange={() => handleSelection(obj)} checked={selectedSP.some(selectedObj => selectedObj.idFunding === obj.idFunding)}/>}
                 {headers.map((headerItems, indexH) => {
                   return (
                     <CCol key={indexH} className = {indexH == 0 ? ("col-4") : (null)}>
@@ -158,4 +158,4 @@ const InfoSPCheck = ({data, headers, onAction, pagesize = 5}) => {
   )
 }
 
-export default InfoSPCheck
+export default InfoFundingCheck
