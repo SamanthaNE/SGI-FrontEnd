@@ -12,9 +12,9 @@ const AccordionRules = ({title, subcategory}) => {
           {subcategory.map((subcategoryItem, indexC) => {
             return (
               <CCol key={indexC} className='mb-3'>
-                <div >{indexC + 1}. {subcategoryItem.subcategory}</div>
+                <div >{indexC + 1}. {subcategoryItem.subcategoryName}</div>
                 <InfoQualificationRule 
-                  dataRules={subcategoryItem.subrules}
+                  dataRules={subcategoryItem.rules}
                   headers={HeadersQualificationRules}
                   btnnav={"detalle"}
                 />

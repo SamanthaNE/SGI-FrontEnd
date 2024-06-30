@@ -1,13 +1,36 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import AccordionRules from '../../../../components/accordion/AccordionRules'
 import { CButton, CCol, CRow } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilPlus } from '@coreui/icons'
 import { useNavigate } from 'react-router-dom'
-import { dataQualificationCategories, dataQualificationRules } from '../../../../data_files/HardData'
+import { dataQualificationRules } from '../../../../data_files/HardData'
+import { KEYCODE } from '../../../../config/Constants'
+import axiosInstance from '../../../../config/HTTPService'
+import LoadingSpinner from '../../../../components/spinner/LoadingSpinner'
 
 const QualificationRules = () => {
+  const [dataRulesAPI, setDataRulesAPI] = useState([]
+);
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const params = {
+          'keyCode': KEYCODE,
+        };
+        
+        const response = await axiosInstance.get('api/evaluationrules/list', { params });
+        setDataRulesAPI(response.data.result);
+        console.log(response.data.result)
+      } catch (error) {
+        console.error('Error:', response.data.message);
+      }
+    }
+  
+    fetchData();
+  }, [])
 
   return (
     <>
@@ -20,11 +43,19 @@ const QualificationRules = () => {
         </CCol>
       </CRow>
 
-      {dataQualificationRules.map((categoryItem, indexC) => {
-        return (
-          <AccordionRules key={indexC} title={categoryItem.category} subcategory={categoryItem.subcategories} />
+      {dataRulesAPI ? 
+        (
+          dataRulesAPI.map((categoryItem, indexC) => {
+            return (
+              <AccordionRules key={indexC} title={categoryItem.categoryName} subcategory={categoryItem.subcategories} />
+            )
+          })
         )
-      })}
+        :
+        (<LoadingSpinner />)
+      }
+
+      
     </>
   )
 }

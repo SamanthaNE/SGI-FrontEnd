@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
-import { CCol, CFormInput, CFormSelect, CRow, CTooltip } from '@coreui/react'
+import React, { useEffect, useState } from 'react'
+import { CButton, CCol, CFormCheck, CFormInput, CFormSelect, CRow, CTooltip } from '@coreui/react'
 import { SPAttributes, SPRuleConditionNumeric, SPRuleConditionTextual } from '../../data_files/HardData';
 import CIcon from '@coreui/icons-react';
-import { cilAsteriskCircle } from '@coreui/icons';
+import { cilAsteriskCircle, cilTrash } from '@coreui/icons';
 
-const RuleFactor = ( { selectedSPTYpe }) => {
+const RuleFactor = ({ first = true, selectedSPTYpe, onCriteriaChange, index, onDelete }) => {
   const [selectedOptionSPTypeAttribute, setSelectedOptionSPTypeAttribute] = useState('');
   const [selectedOptionSPTypeCondition, setSelectedOptionSPTypeCondition] = useState('');
   const [selectedOptionSPTypeValue, setSelectedOptionSPTypeValue] = useState('');
@@ -14,15 +14,69 @@ const RuleFactor = ( { selectedSPTYpe }) => {
   const [minValue, setMinValue] = useState('');
   const [maxValue, setMaxValue] = useState('');
 
+  const [activeStatus, setActiveStatus] = useState(null)
+
+  useEffect(() => {
+  if (!selectedOptionSPTypeAttribute || !selectedOptionSPTypeCondition || !score) {
+      // Si alguno de los campos obligatorios no está completo, no hacer nada
+      return;
+    }
+
+    let newCriteria;
+    const attributeType = SPAttributes[selectedOptionSPTypeAttribute - 1].type;
+
+    if (attributeType === 'textual' && selectedOptionSPTypeValue) {
+      newCriteria = {
+        type: attributeType,
+        attribute: SPAttributes[selectedOptionSPTypeAttribute - 1].attribute,
+        conditionType: selectedOptionSPTypeCondition,
+        attributeValue: selectedOptionSPTypeValue,
+        score: score,
+        connector: activeStatus ?? null
+      };
+
+    } else if (attributeType !== 'textual' && (isInputVisible ? minValue && maxValue : minValue)) {
+      newCriteria = {
+        type: attributeType,
+        attribute: SPAttributes[selectedOptionSPTypeAttribute - 1].attribute,
+        conditionType: selectedOptionSPTypeCondition,
+        minValue: minValue,
+        maxValue: maxValue === '' ? 0 : maxValue,
+        score: score,
+        connector: activeStatus ?? null
+      };
+
+    } else {
+      // Si los campos necesarios no están completos, no hacer nada
+      return;
+    }
+
+    onCriteriaChange(index, newCriteria);
+  }, [selectedOptionSPTypeAttribute, selectedOptionSPTypeCondition, selectedOptionSPTypeValue, score, minValue, maxValue, isInputVisible, activeStatus]);
+
+
   const handleConditionChange = (e) => {
     const value = e.target.value
     setSelectedOptionSPTypeCondition(value)
 
-    if (value === '5') {
+    if (value === '[]') {
       setIsInputVisible(true)
     } else {
       setIsInputVisible(false)
     }
+  }
+
+  const handleScoreChange = (e) => {
+    const value = e.target.value;
+    const regex = /^[0-9]*\.?[0-9]*$/;
+
+    if (regex.test(value)) {
+      setScore(value);
+    }
+  };
+
+  const handleStatus = (e) => {
+    setActiveStatus(e.target.value);
   }
 
   const filteredAttributes = SPAttributes.filter(attr => attr.sptype === selectedSPTYpe);
@@ -30,12 +84,27 @@ const RuleFactor = ( { selectedSPTYpe }) => {
   return (
     <>
       <CRow className="d-flex align-items-center mb-3">
-        <CCol sm={1}>Factor</CCol>
+        {
+          first ?
+          (
+            <CCol sm={1}>Factor</CCol>
+          )
+          :
+          (
+            <CCol sm={1}>
+              <CFormCheck button={{ color: 'primary', variant: 'outline' }} type="radio" name={`options-outlined-status-F-${index}`}  
+                          id={`FY-${index}`} label={'Y'} value={"AND"} onChange={handleStatus} checked={activeStatus === "AND"}/>
+              <CFormCheck button={{ color: 'primary', variant: 'outline' }} type="radio" name={`options-outlined-status-F-${index}`}
+                          id={`FO-${index}`}  label={'O'} value={"OR"} onChange={handleStatus} checked={activeStatus === "OR"}/>
+            </CCol>
+          )
+        }
+        
         <CCol>
           <CFormSelect aria-label="type"
                         value={selectedOptionSPTypeAttribute} onChange={(e) => setSelectedOptionSPTypeAttribute(e.target.value)}>
             <option value="">Atributo</option>
-            {filteredAttributes.map((option, indexSPA) => (
+            {filteredAttributes.map((option, _) => (
               <option key={option.id} value={option.id}>
                 {option.name}
               </option>
@@ -51,7 +120,7 @@ const RuleFactor = ( { selectedSPTYpe }) => {
               SPAttributes[selectedOptionSPTypeAttribute - 1].type === 'textual' ?
               (
                 SPRuleConditionTextual.map((option) => (
-                  <option key={option.id} value={option.id}>
+                  <option key={option.id} value={option.value}>
                     {option.type}
                   </option>
                 ))
@@ -59,7 +128,7 @@ const RuleFactor = ( { selectedSPTYpe }) => {
               :
               (
                 SPRuleConditionNumeric.map((option) => (
-                  <option key={option.id} value={option.id}>
+                  <option key={option.id} value={option.value}>
                     {option.type}
                   </option>
                 ))
@@ -76,8 +145,8 @@ const RuleFactor = ( { selectedSPTYpe }) => {
                         value={selectedOptionSPTypeValue} onChange={(e) => setSelectedOptionSPTypeValue(e.target.value)}>
               <option value="">Valor</option>
               {
-                SPAttributes[selectedOptionSPTypeAttribute - 1].attributeValue.map((option, indexSPT) => (
-                  <option key={option.id} value={option.id}>
+                SPAttributes[selectedOptionSPTypeAttribute - 1].attributeValue.map((option, _) => (
+                  <option key={option.id} value={option.value}>
                     {option.value}
                   </option>
                 ))
@@ -117,17 +186,31 @@ const RuleFactor = ( { selectedSPTYpe }) => {
         </CCol>
         <CCol>
           <CFormInput type="input" id="score" placeholder="Factor de multiplicación" 
-                      value={score} onChange={(e) => setScore(e.target.value.replace(/[^0-9]/g, ''))}
+                      value={score} onChange={handleScoreChange}
           />
         </CCol>
-        <CCol sm={1} className="d-flex justify-content-center">
-          <CTooltip
-            content="Factor aplicable a todos los criterios establecidos"
-            placement="right"
-          >
-            <CIcon icon={cilAsteriskCircle} />
-          </CTooltip>
-        </CCol>
+        {
+          first ?
+          (
+            <CCol sm={1} className="d-flex justify-content-center">
+              <CTooltip
+                content="Factor aplicable a todos los criterios establecidos"
+                placement="right"
+              >
+                <CIcon icon={cilAsteriskCircle} />
+              </CTooltip>
+            </CCol>
+          )
+          :
+          (
+            <CCol sm={1} className="d-flex justify-content-center">
+              <CButton color="danger" variant="outline" onClick={() => onDelete(index)}>
+                <CIcon icon={cilTrash} />
+              </CButton>
+            </CCol>
+          )
+        }
+
       </CRow>
     </>
   )

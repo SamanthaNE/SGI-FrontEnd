@@ -102,11 +102,7 @@ export const HeadersFundingWorker = [
 export const HeadersQualificationRules = [
   {
     heading: 'Nombre',
-    value: 'name',
-  },
-  {
-    heading: 'Puntaje',
-    value: 'score',
+    value: 'ruleName',
   },
   {
     heading: 'Acciones',

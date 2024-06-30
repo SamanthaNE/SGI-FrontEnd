@@ -4,11 +4,18 @@ import { useNavigate } from 'react-router-dom'
 import CIcon from '@coreui/icons-react'
 import { cilPencil, cilTrash } from '@coreui/icons'
 import ModalDelete from '../modals/ModalDelete'
+import { KEYCODE } from '../../config/Constants'
+import axiosInstance from '../../config/HTTPService'
+import MessageToast from '../toast/MessageToast'
 
 const InfoQualificationRule = ({dataRules, headers, btnnav}) => {
   const navigate = useNavigate()
   const [visible, setVisible] = useState(false)
   const [ruleToDelete, setRuleToDelete] = useState(null)
+
+  const [toastVisible, setToastVisible] = useState(false)
+  const [toastHeader, setToastHeader] = useState('')
+  const [toastBody, setToastBody] = useState('')
 
   const handleNavigationAction = (ruleID) => {
     navigate(btnnav + `/${ruleID}`)
@@ -19,10 +26,31 @@ const InfoQualificationRule = ({dataRules, headers, btnnav}) => {
     setVisible(true)
   }
 
-  const confirmDelete = () => {
-    console.log(`Deleting rule with ID: ${ruleToDelete}`)
-    // Logica de eliminacion
-    // Se debe actualizar el arreglo de data
+  const confirmDelete = async(e) => {   
+    const params = {
+      keyCode: KEYCODE,
+      idRule: ruleToDelete
+    };
+
+    try {
+      const response = await axiosInstance.post('api/evaluationrules/disablerule', params);
+      
+      if (response) {
+        console.log(response)
+        setToastHeader('Mensaje')
+        setToastBody(response.data.messageConfirm)
+        setToastVisible(true)
+        setTimeout(() => {
+          window.location.reload()
+        }, 3000)
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setToastHeader('Error')
+      setToastBody('Hubo un problema al eliminar la regla. Por favor, inténtelo de nuevo.')
+      setToastVisible(true)
+    }
+
     setVisible(false)
   }
 
@@ -52,10 +80,10 @@ const InfoQualificationRule = ({dataRules, headers, btnnav}) => {
                           <CDropdown>
                             <CDropdownToggle color="primary" variant="ghost">Opciones</CDropdownToggle>
                             <CDropdownMenu>
-                              <CDropdownItem onClick={() => handleNavigationAction(ruleItem.id)}>
+                              <CDropdownItem onClick={() => handleNavigationAction(ruleItem.idRule)}>
                                 <CIcon icon={cilPencil} /> Editar
                               </CDropdownItem>
-                              <CDropdownItem onClick={() => handleDelete(ruleItem.id)}>
+                              <CDropdownItem onClick={() => handleDelete(ruleItem.idRule)}>
                                 <CIcon icon={cilTrash} /> Eliminar
                               </CDropdownItem>
                             </CDropdownMenu>
@@ -82,6 +110,10 @@ const InfoQualificationRule = ({dataRules, headers, btnnav}) => {
       setVisible={setVisible}
       onDelete={confirmDelete}
     />
+
+    {toastVisible && 
+      <MessageToast header={toastHeader} body={toastBody} />
+    }
   </>
   )
 }

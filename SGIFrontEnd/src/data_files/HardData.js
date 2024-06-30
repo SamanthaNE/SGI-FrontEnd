@@ -323,7 +323,19 @@ export const dataQualificationCategories = [
       {
         id: 2,
         name: 'Publicación completa en memorias o anales de congreso'
-      }
+      },
+      {
+        id: 3,
+        name: 'Libros'
+      },
+      {
+        id: 4,
+        name: 'Capítulos de libros'
+      },
+      {
+        id: 5,
+        name: 'Productos tecnológico'
+      },
     ],
     minimum_score: 10
   },
@@ -332,8 +344,20 @@ export const dataQualificationCategories = [
     name: 'Productos de formación',
     subcategories: [
       {
-        id: 1,
+        id: 6,
         name: 'Asesoría de Tesis'
+      },
+      {
+        id: 7,
+        name: 'Programa formativo'
+      },
+      {
+        id: 8,
+        name: 'Producción estudiantil'
+      },
+      {
+        id: 9,
+        name: 'Reconocimiento a la innovación docente'
       }
     ],
     minimum_score: 8
@@ -343,9 +367,25 @@ export const dataQualificationCategories = [
     name: 'Productos de divulgación y difusión',
     subcategories: [
       {
-        id: 1,
+        id: 10,
         name: 'Eventos académicos'
-      }
+      },
+      {
+        id: 11,
+        name: 'Premios recibidos'
+      },
+      {
+        id: 12,
+        name: 'Movilidad'
+      },
+      {
+        id: 13,
+        name: 'Acciones para generar impacto social'
+      },
+      {
+        id: 14,
+        name: 'Fondos externos'
+      },
     ],
     minimum_score: 4
   }
@@ -363,13 +403,11 @@ export const dataQualificationRules = [
           {
             id: 1,
             name: 'Articulos de revistas indizadas en WoS y Scopus (Q1)',
-            score: 6
           },
           {
             id: 2,
             name: 'Artículos en revistas indizadas en WoS y Scopus (Q2)',
-            score: 5,
-          }
+          },
         ]
       },
       {
@@ -379,7 +417,6 @@ export const dataQualificationRules = [
           {
             id: 1,
             name: 'Publicación completa en memorias o anales de congreso en editoriales internacionales indizadas',
-            score: 3
           },
         ]
       }
@@ -396,7 +433,6 @@ export const dataQualificationRules = [
           {
             id: 1,
             name: 'Asesoría y sustentación de tesis de licenciatura',
-            score: 2
           },
         ]
       }
@@ -447,22 +483,27 @@ export const SPRuleConditionNumeric = [
   {
     id: 1,
     type: 'Igual a',
+    value: '='
   },
   {
     id: 2,
     type: 'Diferente a',
+    value: '!='
   },
   {
     id: 3,
     type: 'Mayor que',
+    value: '>'
   },
   {
     id: 4,
     type: 'Menor que',
+    value: '<'
   },
   {
     id: 5,
     type: 'En el rango',
+    value: '[]'
   },
 ]
 
@@ -470,10 +511,12 @@ export const SPRuleConditionTextual = [
   {
     id: 1,
     type: 'Igual a',
+    value: '='
   },
   {
     id: 2,
     type: 'Diferente a',
+    value: '!='
   },
 ]
 
@@ -598,7 +641,7 @@ export const SPAttributes = [
   {
     id: 4,
     sptype: 'project',
-    attribute: 'Amount',
+    attribute: 'amount',
     name: 'Monto de financiamiento',
     type: 'numeric',
   },
@@ -608,5 +651,17 @@ export const SPAttributes = [
     attribute: 'funding_type',
     name: 'Tipos de financiamiento',
     type: 'textual',
+    attributeValue: [
+      {
+        id: 1,
+        value: 'EXTERNO',
+        score: 0,
+      },
+      {
+        id: 2,
+        value: 'VRI',
+        score: 0,
+      },
+    ]
   },
 ]

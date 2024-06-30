@@ -24,12 +24,21 @@ const CriteriaRuleSelector = ({ index, handleChange, onDelete, selectedSPTYpe })
     const value = e.target.value
     setSelectedOptionSPTypeCondition(value)
 
-    if (value === '5') {
+    if (value === '[]') {
       setIsInputVisible(true)
     } else {
       setIsInputVisible(false)
     }
   }
+
+  const handleScoreChange = (e) => {
+    const value = e.target.value;
+    const regex = /^[0-9]*\.?[0-9]*$/;
+
+    if (regex.test(value)) {
+      setScore(value);
+    }
+  };
 
   const filteredAttributes = SPAttributes.filter(attr => attr.sptype === selectedSPTYpe);
 
@@ -62,7 +71,7 @@ const CriteriaRuleSelector = ({ index, handleChange, onDelete, selectedSPTYpe })
               SPAttributes[selectedOptionSPTypeAttribute - 1].type === 'textual' ?
               (
                 SPRuleConditionTextual.map((option) => (
-                  <option key={option.id} value={option.id}>
+                  <option key={option.id} value={option.value}>
                     {option.type}
                   </option>
                 ))
@@ -70,7 +79,7 @@ const CriteriaRuleSelector = ({ index, handleChange, onDelete, selectedSPTYpe })
               :
               (
                 SPRuleConditionNumeric.map((option) => (
-                  <option key={option.id} value={option.id}>
+                  <option key={option.id} value={option.value}>
                     {option.type}
                   </option>
                 ))
@@ -88,7 +97,7 @@ const CriteriaRuleSelector = ({ index, handleChange, onDelete, selectedSPTYpe })
               <option value="">Valor</option>
               {
                 SPAttributes[selectedOptionSPTypeAttribute - 1].attributeValue.map((option, indexSPT) => (
-                  <option key={option.id} value={option.id}>
+                  <option key={option.id} value={option.value}>
                     {option.value}
                   </option>
                 ))
@@ -129,7 +138,7 @@ const CriteriaRuleSelector = ({ index, handleChange, onDelete, selectedSPTYpe })
 
         <CCol>
           <CFormInput type="input" id="score" placeholder="Puntaje asignado" 
-                      value={score} onChange={(e) => setScore(e.target.value.replace(/[^0-9]/g, ''))}
+                      value={score} onChange={handleScoreChange}
           />
         </CCol>
 
