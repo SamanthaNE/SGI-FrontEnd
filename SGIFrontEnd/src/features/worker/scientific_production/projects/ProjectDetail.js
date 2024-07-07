@@ -24,6 +24,7 @@ const ProjectDetail = () => {
       await axiosInstance.get('api/scientificprod/projectdetail', { params })
                   .then((response) => {
                     setDataAPIProject(response.data.projectDetailDto);
+                    console.log(response.data)
                   })
                   .catch((err) => {
                     let errMsg;
@@ -44,7 +45,7 @@ const ProjectDetail = () => {
 
         <InfoProjectDetail data={dataAPIProject} />
 
-        <AccordionInfo title={'Financiamientos'} data={dataAPIProject.relatedFundingList}/>
+        <AccordionInfo title={'Financiamientos'} data={dataAPIProject.relatedFundingList} userRole={'worker'}/>
       </>)
       :
       (<LoadingSpinner />)

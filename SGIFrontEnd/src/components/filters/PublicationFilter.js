@@ -2,34 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { CButton, CCard, CCardBody, CCardTitle, CCol, CRow, CFormSelect } from '@coreui/react'
 import { PFResourceType, SPFGroup, SPFTypeD, SPFTypeS } from '../../data_files/FiltersData';
 
-const PublicationFilter = ({data, performance = false}) => {
+const PublicationFilter = ({ onAction, performance = false }) => {
   const [searchTitle, setSearchTitle] = useState('');
   const [searchJournalName, setSearchJournalName] = useState('');
   const [searchAuthor, setSearchAuthor] = useState('');
   const [selectedResourceType, setSelectedResourceType] = useState('');
   const [searchYear, setSearchYear] = useState('');
   const [selectedOptionGroup, setSelectedOptionGroup] = useState('');
-
-  const [searchResults, setSearchResults] = useState([]);
-/*
-  const handleChangeTitle = (e) =>
-  {
-      const searchTerm = e.target.value;
-      const filtered = data.filter((item) => item.title.toLowerCase().includes(searchTerm.toLowerCase()));
-      setSearchTitle(filtered);
-      console.log(searchTitle);
-  };
-*/
-  const handleSearch = () => {
-    console.log(searchTitle);
-    console.log(searchJournalName);
-    console.log(searchAuthor);
-    console.log(selectedResourceType);
-    console.log(searchYear);
-
-    const results = [];
-    setSearchResults(results);
-  };
 
   const handleClearFilter = () => {
     setSearchTitle('');
@@ -39,6 +18,18 @@ const PublicationFilter = ({data, performance = false}) => {
     setSearchYear('');
     setSelectedOptionGroup('');
   }
+
+  const handleSearch = () => {
+    const results = {
+      'title': searchTitle === '' ? null : searchTitle,
+      'publishedIn': searchJournalName === '' ? null : searchJournalName,
+      'resourceType': selectedResourceType === '' ? null : selectedResourceType,
+      'year': searchYear === '' ? null : searchYear,
+      'author': searchAuthor === '' ? null : searchAuthor,
+    };
+
+    onAction(results);
+  };
 
   return (
     <CCard className="mb-3">
@@ -65,18 +56,10 @@ const PublicationFilter = ({data, performance = false}) => {
               onChange={(e) => setSearchJournalName(e.target.value)}
             />
           </CCol>
-          <CCol className="sm-4">
-            <input
-              className="form-control"
-              type="text"
-              placeholder="Apellido del autor"
-              aria-label="autor"
-              value={searchAuthor}
-              onChange={(e) => setSearchAuthor(e.target.value)}
-            />
-          </CCol>
+          
         </CRow>
         <CRow className="mb-2">
+          {/*
             <CCol className={"sm-3"}>
               <CFormSelect aria-label="group" value={selectedOptionGroup} onChange={(e) => setSelectedOptionGroup(e.target.value)}>
                 <option value="">Grupo de investigación</option>
@@ -87,11 +70,22 @@ const PublicationFilter = ({data, performance = false}) => {
                 ))}
               </CFormSelect>
             </CCol>
+            */}
+          <CCol className={performance === true ? ("sm-3") : ("sm-4")}>
+            <input
+              className="form-control"
+              type="text"
+              placeholder="Apellido del autor"
+              aria-label="autor"
+              value={searchAuthor}
+              onChange={(e) => setSearchAuthor(e.target.value)}
+            />
+          </CCol>
           <CCol className={performance === true ? ("sm-3") : ("sm-4")}>
             <CFormSelect aria-label="typeS" value={selectedResourceType} onChange={(e) => setSelectedResourceType(e.target.value)}>
               <option value="">Tipo de recurso</option>
-              {PFResourceType.map((option) => (
-                <option  key={option.value} value={option.label}>
+              {PFResourceType.map((option, index) => (
+                <option  key={index} value={option.value}>
                   {option.label}
                 </option>
               ))}

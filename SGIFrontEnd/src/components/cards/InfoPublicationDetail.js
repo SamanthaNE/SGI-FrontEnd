@@ -11,27 +11,27 @@ const InfoPublicationDetail = ({data, validation = true}) => {
             <CCol sm={validation === true ? 8 : 12} >
               <CRow>
                 <div className="h6 mb-2">Resumen</div>
-                <div className="mb-2 text-body">{data.abstractPublication ?? "-"}</div>
+                <div className="mb-2 text-body">{data.abstractPublication ?? <i>Sin información</i>}</div>
               </CRow>
               <CRow>
                 <CCol sm={3} className="h6">Tipo de recurso</CCol>
-                <CCol className="text-body">{data.resourceTypeCOARName ?? "-"}</CCol>
+                <CCol className="text-body">{data.resourceTypeCOARName ?? <i>Sin información</i>}</CCol>
               </CRow>
               <CRow>
                 <CCol sm={3} className="h6">Nombre de la revista</CCol>
-                <CCol className="text-body">{data.publishedIn ?? "-"}</CCol>
+                <CCol className="text-body">{data.publishedIn ?? <i>Sin información</i>}</CCol>
               </CRow>
               <CRow>
                 <CCol sm={3} className="h6">Volumen</CCol>
-                <CCol className="text-body">{data.volume ?? "-"}</CCol>
+                <CCol className="text-body">{data.volume ?? <i>Sin información</i>}</CCol>
               </CRow>
               <CRow>
                 <CCol sm={3} className="h6">Rango de páginas</CCol>
-                <CCol className="text-body">{(data.startPage ?? "-") + " " + (data.endPage ?? "-")}</CCol>
+                <CCol className="text-body">{(data.startPage && data.startPage) ? ((data.startPage ?? "-") + " - " + (data.endPage ?? "-")) : <i>Sin información</i>}</CCol>
               </CRow>
               <CRow>
                 <CCol sm={3} className="h6">Año</CCol>
-                <CCol className="text-body">{data.publicationDate ?? "-"}</CCol>
+                <CCol className="text-body">{data.publicationDate ?? <i>Sin información</i>}</CCol>
               </CRow>
             </CCol>
           {
@@ -52,7 +52,8 @@ const InfoPublicationDetail = ({data, validation = true}) => {
                 </CRow>
                 <CRow className="mb-2">
                   <div className="h6 mb-2">Grupo(s) de investigación</div>
-                  {data.group && Array.isArray(data.group) ?
+                  {/*
+                    data.group && Array.isArray(data.group) ?
                     (data.group.map((groupItems, indexG) => {
                       return (
                         <div className="text-body" key={indexG}>{groupItems.name}</div>
@@ -60,19 +61,29 @@ const InfoPublicationDetail = ({data, validation = true}) => {
                     }))
                     :
                     (<div className="text-body"><em>No asignado</em></div>)
+                  */}
+                  {
+                    data.researchGroups && data.researchGroups.length > 0 ?
+                    data.researchGroups.map((groupItems, indexG) => {
+                      return (
+                        <div className="text-body" key={indexG}>{groupItems.name}</div>
+                      )
+                    })
+                    :
+                    <div className="text-body"><em>No asignado</em></div>
                   }
                 </CRow>
                 <CRow className="mb-2">
                   <div className="h6 mb-2">Categoría</div>
-                  <div className="text-body">{data.category ?? <em>No asignado</em>}</div>
+                  <div className="text-body">{data.evaluationDetail ? data.evaluationDetail.categoryName : <em>No asignado</em>}</div>
                 </CRow>
                 <CRow className="mb-2">
                   <div className="h6 mb-2">Sub categoría</div>
-                  <div className="text-body">{data.subcategory ?? <em>No asignado</em>}</div>
+                  <div className="text-body">{data.evaluationDetail ? data.evaluationDetail.subcategoryName : <em>No asignado</em>}</div>
                 </CRow>
                 <CRow className="mb-2">
                   <div className="h6 mb-2">Puntaje asignado</div>
-                  <div className="text-body">{data.score ?? <em>No asignado</em>}</div>
+                  <div className="text-body">{data.evaluationDetail ? data.evaluationDetail.evaluationScore : <em>No asignado</em>}</div>
                 </CRow>
               </CCol>
             )

@@ -137,7 +137,6 @@ const PerformanceEval = () => {
         (
           <>
             <div className='h5'>Resultados ({dataAPIPublications.total}):</div>
-
             <InfoSP 
               data={dataAPIPublications.result} 
               headers={HeadersSPEval}

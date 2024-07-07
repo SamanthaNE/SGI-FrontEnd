@@ -2,22 +2,21 @@ import React, { useState } from 'react'
 import { CButton, CCard, CCardBody, CCardTitle, CCol, CRow, CFormSelect } from '@coreui/react'
 import { FFOrg, PFFunding } from '../../data_files/FiltersData';
 
-const FundingFilter = () => {
+const FundingFilter = ({ onAction }) => {
   const [searchTitle, setSearchTitle] = useState('');
   const [searchIdentifier, setSearchIdentifier] = useState('');
   const [selectedOptionOrg, setSelectedOptionOrg] = useState('');
   const [selectedOptionFunding, setSelectedOptionFunding] = useState('');
 
-  const [searchResults, setSearchResults] = useState([]);
-
   const handleSearch = () => {
-    console.log(searchTitle);
-    console.log(searchIdentifier);
-    console.log(selectedOptionOrg);
-    console.log(selectedOptionFunding);
+    const results = {
+      'title': searchTitle === '' ? null : searchTitle,
+      'identifier': searchIdentifier === '' ? null : searchIdentifier,
+      'orgUnit': selectedOptionOrg === '' ? null : selectedOptionOrg,
+      'fundingType': selectedOptionFunding === '' ? null : selectedOptionFunding
+    };
 
-    const results = [];
-    setSearchResults(results);
+    onAction(results);
   };
 
   const handleClearFilter = () => {
@@ -55,8 +54,8 @@ const FundingFilter = () => {
           <CCol className="sm-4">
             <CFormSelect aria-label="orgunit" value={selectedOptionOrg} onChange={(e) => setSelectedOptionOrg(e.target.value)}>
               <option value="">Entidad financiadora</option>
-              {FFOrg.map((option) => (
-                <option  key={option.value} value={option.label}>
+              {FFOrg.map((option, index) => (
+                <option  key={index} value={option.value}>
                   {option.label}
                 </option>
               ))}
@@ -65,8 +64,8 @@ const FundingFilter = () => {
           <CCol className="sm-4">
             <CFormSelect aria-label="typeFunding" value={selectedOptionFunding} onChange={(e) => setSelectedOptionFunding(e.target.value)}>
               <option value="">Tipo de financiamiento</option>
-              {PFFunding.map((option) => (
-                <option  key={option.value} value={option.label}>
+              {PFFunding.map((option, index) => (
+                <option  key={index} value={option.value}>
                   {option.label}
                 </option>
               ))}

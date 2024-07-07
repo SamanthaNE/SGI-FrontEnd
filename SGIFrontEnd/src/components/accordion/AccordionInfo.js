@@ -3,19 +3,35 @@ import { CAccordion, CAccordionItem, CAccordionHeader, CAccordionBody } from '@c
 import InfoSP from '../cards/InfoSP';
 import { HeadersFundingWorker, HeadersProjectsWorker, HeadersPublicationsWorker } from '../../data_files/HeadersWorker';
 
-const AccordionInfo = ({title, data}) => {
+const AccordionInfo = ({title, data, userRole}) => {
   return (
     <CAccordion className="mb-3">
       <CAccordionItem>
         <CAccordionHeader>{title} {title === ('Publicaciones' || 'Patentes') ? ("vinculadas") : ("vinculados")}</CAccordionHeader>
         <CAccordionBody>
-          <InfoSP 
-            data={data} 
-            headers={title  === 'Publicaciones' ? (HeadersPublicationsWorker) : (title  === 'Proyectos' ? (HeadersProjectsWorker) : (HeadersFundingWorker))}
-            btnnav={title  === 'Publicaciones' ? ("/publicaciones/historico/detalle") : (title  === 'Proyectos' ? ("/proyectos/detalle") : (""))} 
-            btnmore={"empty"}
-            detail={true}
-          />
+          {
+            userRole === "researcher" ?
+            (
+              <InfoSP 
+                data={data} 
+                headers={title  === 'Publicaciones' ? (HeadersPublicationsWorker) : (title  === 'Proyectos' ? (HeadersProjectsWorker) : (HeadersFundingWorker))}
+                btnnav={title  === 'Publicaciones' ? ("/evaluacion/publicaciones/detalle") : (title  === 'Proyectos' ? ("/evaluacion/proyectos/detalle") : (""))} 
+                btnmore={"empty"}
+                detail={true}
+              />
+            )
+            :
+            (
+              <InfoSP 
+                data={data} 
+                headers={title  === 'Publicaciones' ? (HeadersPublicationsWorker) : (title  === 'Proyectos' ? (HeadersProjectsWorker) : (HeadersFundingWorker))}
+                btnnav={title  === 'Publicaciones' ? ("/publicaciones/historico/detalle") : (title  === 'Proyectos' ? ("/proyectos/detalle") : (""))} 
+                btnmore={"empty"}
+                detail={true}
+              />
+            )
+          }
+
         </CAccordionBody>
       </CAccordionItem>
     </CAccordion>

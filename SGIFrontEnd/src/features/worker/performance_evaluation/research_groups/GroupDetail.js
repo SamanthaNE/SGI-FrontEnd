@@ -10,6 +10,8 @@ import LoadingSpinner from '../../../../components/spinner/LoadingSpinner'
 const GroupDetail = () => {
   const { elementID } = useParams() 
   const [dataAPIGroup, setDataAPIGroup] = useState(null);
+  let totalScore = 0;
+  let totalMinScore = 0;
 
   // RESEARCH GROUPS
   useEffect(() => {
@@ -45,59 +47,72 @@ const GroupDetail = () => {
                 <div className="h6 mb-3">Datos generales</div>
 
                 <CRow>
-                  <CCol sm={3} className="h6">Estado</CCol>
-                  <CCol className="text-body">{dataAPIGroup.statusGroup ?? "-"}</CCol>
+                  <CCol sm={5} className="h6">Año de evaluación</CCol>
+                  <CCol className="text-body">{dataAPIGroup.evaluationYear ?? <i>Sin información</i>}</CCol>
                 </CRow>
                 <CRow>
-                  <CCol sm={3} className="h6">Categoría</CCol>
-                  <CCol className="text-body">{dataAPIGroup.categoryGroup ?? "-"}</CCol>
+                  <CCol sm={5} className="h6">Estado</CCol>
+                  <CCol className="text-body">{dataAPIGroup.statusGroup ?? <i>Sin información</i>}</CCol>
                 </CRow>
-                
-                {/*
-                dataQualificationCategories.length > 0 ?
-                  dataQualificationCategories.map((categoryItem, indexC) => {
-                    return (
-                      <CRow key={indexC}>
-                        <CCol className='text-body mb-2' sm={6}>{categoryItem.name}</CCol>
-                        <CCol className='text-body mb-2' sm={2}>-</CCol> 
-                        <CCol className='text-body mb-2' sm={2}>-</CCol>
-                        <CCol className='text-body mb-2' sm={2}>{categoryItem.minimum_score}</CCol>
-                      </CRow>
-                    )
-                  })
-                  :
-                  <div className="text-body"><em>No asignado</em></div>
-                */}
 
+                <div className="h6 mt-3">Evaluación actual</div>
+                <CRow>
+                  <CCol sm={5} className="h6">Categoría</CCol>
+                  <CCol className="text-body">{dataAPIGroup.categoryGroup ?? <i>Sin información</i>}</CCol>
+                </CRow>
                 <CRow>
                   <CCol className='h6 mt-2 mb-3' sm={6}>Rubros de evaluacion</CCol>
                   <CCol className='h6 mt-2 mb-3' sm={2}>Cant.</CCol>
                   <CCol className='h6 mt-2 mb-3' sm={2}>Ptje.</CCol>
                   <CCol className='h6 mt-2 mb-3' sm={2}>Ptje. Min.</CCol>
                 </CRow>
-                <CRow>
-                  <CCol className='text-body mb-2' sm={6}>Productos de nuevo conocimiento</CCol>
-                  <CCol className='text-body mb-2' sm={2}>-</CCol> {/* DINAMICO */}
-                  <CCol className='text-body mb-2' sm={2}>-</CCol> {/* DINAMICO */}
-                  <CCol className='text-body mb-2' sm={2}>10</CCol> {/* DINAMICO */}
-                </CRow>
-                <CRow>
-                  <CCol className='text-body mb-2' sm={6}>Productos de formación</CCol>
-                  <CCol className='text-body mb-2' sm={2}>-</CCol> {/* DINAMICO */}
-                  <CCol className='text-body mb-2' sm={2}>-</CCol> {/* DINAMICO */}
-                  <CCol className='text-body mb-2' sm={2}>8</CCol> {/* DINAMICO */}
-                </CRow>
-                <CRow>
-                  <CCol className='text-body mb-2' sm={6}>Productos de divulgación y difusión</CCol>
-                  <CCol className='text-body mb-2' sm={2}>-</CCol> {/* DINAMICO */}
-                  <CCol className='text-body mb-2' sm={2}>-</CCol> {/* DINAMICO */}
-                  <CCol className='text-body mb-2' sm={2}>4</CCol> {/* DINAMICO */}
-                </CRow>
+                {
+                  dataAPIGroup.researchGroupEvaluationDetail && dataAPIGroup.researchGroupEvaluationDetail.length > 0 ?
+                  (
+                    dataAPIGroup.researchGroupEvaluationDetail.map((item, indexRGED) => {
+                      totalScore += item.categoryScore
+                      totalMinScore += item.minimumScore
+                      return (
+                        <CRow key={indexRGED}>
+                          <CCol className='text-body mb-2' sm={6}>{item.categoryName ?? "-"}</CCol>
+                          <CCol className='text-body mb-2' sm={2}>{item.quantity ?? "-"}</CCol>
+                          <CCol className='text-body mb-2' sm={2}>{item.categoryScore ?? "-"}</CCol>
+                          <CCol className='text-body mb-2' sm={2}>{item.minimumScore ?? "-"}</CCol>
+                        </CRow>
+                      )
+                    })
+                  )
+                  :
+                  (
+                    <>
+                      <CRow>
+                        <CCol className='text-body mb-2' sm={6}>Productos de nuevo conocimiento</CCol>
+                        <CCol className='text-body mb-2' sm={2}>-</CCol>
+                        <CCol className='text-body mb-2' sm={2}>-</CCol>
+                        <CCol className='text-body mb-2' sm={2}>10</CCol>
+                      </CRow>
+                      <CRow>
+                        <CCol className='text-body mb-2' sm={6}>Productos de formación</CCol>
+                        <CCol className='text-body mb-2' sm={2}>-</CCol>
+                        <CCol className='text-body mb-2' sm={2}>-</CCol>
+                        <CCol className='text-body mb-2' sm={2}>8</CCol>
+                      </CRow>
+                      <CRow>
+                        <CCol className='text-body mb-2' sm={6}>Productos de divulgación y difusión</CCol>
+                        <CCol className='text-body mb-2' sm={2}>-</CCol>
+                        <CCol className='text-body mb-2' sm={2}>-</CCol>
+                        <CCol className='text-body mb-2' sm={2}>4</CCol>
+                      </CRow>
+                    </>
+                  )
+                }
+                
                 <CRow className='custom-border-padding-eval'>
                   <CCol className='h6 mt-2' sm={8}>Puntaje total</CCol>
-                  <CCol className='text-body mb-2' sm={2}>-</CCol> {/* DINAMICO */}
+                  <CCol className='text-body mb-2' sm={2}>{totalScore}</CCol> {/* DINAMICO */}
                   <CCol className='text-body mb-2' sm={2}>22</CCol> {/* DINAMICO */}
                 </CRow>
+
               </CCardBody>
             </CCard>
           </CCol>

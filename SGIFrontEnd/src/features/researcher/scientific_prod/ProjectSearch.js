@@ -20,29 +20,41 @@ const ProjectSearch = () => {
 
   const [dataAPIProjects, setDataAPIProjects] = useState(null);
 
+  const [filtersData, setFiltersData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   // PROJECTS
   useEffect(() => {
     const fetchData = async () => {
-        const params = {
-          'keyCode': KEYCODE,
-          'idPerson': user.idPerson ?? 0
-        };
+      setIsLoading(true);
 
-        await axiosInstance.get('api/evaluation/projects', { params })
-                          .then((response) => {
-                            setDataAPIProjects(response.data);
-                            console.log(response.data)
-                          })
-                          .catch((err) => {
-                            let errMsg;
-                            (!err.response) ? errMsg = 'No se pudo conectar con el servidor. Verifique su conexión.' : (err.response.code === 404 ? errMsg = "Servicio no disponible. Intenta más tarde." : errMsg = err.response.data.message);
-                            console.log(errMsg);
-                            setDataAPIProjects({result:[]})
-                          });
+      const params = {
+        'keyCode': KEYCODE,
+        'idPerson': user.idPerson ?? 0,
+        'title': filtersData ? filtersData.title : null,
+        'status': filtersData ? filtersData.status : null,
+        'startDate': filtersData ? filtersData.startDate : null,
+        'endDate': filtersData ? filtersData.endDate : null,
+        'fundingType': filtersData ? filtersData.fundingType : null,
+      };
+
+      await axiosInstance.get('api/evaluation/projects', { params })
+                        .then((response) => {
+                          setDataAPIProjects(response.data);
+                        })
+                        .catch((err) => {
+                          let errMsg;
+                          (!err.response) ? errMsg = 'No se pudo conectar con el servidor. Verifique su conexión.' : (err.response.code === 404 ? errMsg = "Servicio no disponible. Intenta más tarde." : errMsg = err.response.data.message);
+                          console.log(errMsg);
+                          setDataAPIProjects({result:[]})
+                        })
+                        .finally(() =>{
+                          setIsLoading(false);
+                        });
     }
   
     fetchData();
-  }, [])
+  }, [filtersData])
 
   /* REDUX */
   const dispatch = useDispatch();
@@ -63,36 +75,45 @@ const ProjectSearch = () => {
     navigate('/publicaciones/revision/detalle/' + `${elementID}` + '/proyectos/nuevo');
   }
 
+  const handleFilters = (filters) => {
+    setFiltersData(filters);
+  }
+
   return (
     <>
       <div className='h4'>Busqueda de proyectos</div>
 
       {
-        dataAPIProjects ?
-        (<>
-            <ProjectsFilter data={dataAPIProjects.result}/>
-
-            <div className='h5'>Resultados ({dataAPIProjects.total}):</div>
-
-            <CRow>
-              <CCol>
-                <div className="d-grid gap-2 d-md-block mb-3">
-                  <CButton color="primary" className="me-md-2" onClick={handleNavigation}>Agregar</CButton>
-                  <CButton color="primary" variant="outline" disabled={selectedProjectsLocal.length === 0} onClick={handleLinkProject}>Vincular</CButton>
-                </div>
-              </CCol>
-              <CCol className='text-end'>
-                  <div className='text-body-secondary'>{selectedProjectsLocal.length} elemento(s) seleccionado(s)</div>
-              </CCol>
-            </CRow>
-            <CRow>
-              <CCol className='mb-3'>
-                <InfoProjectCheck data={dataAPIProjects.result} headers={HeadersProject} onAction={handleSelection}/>
-              </CCol>
-            </CRow>
-        </>)
-        :
+        isLoading ?
         (<LoadingSpinner />)
+        :
+        (
+          dataAPIProjects ?
+          (<>
+              <ProjectsFilter onAction={handleFilters}/>
+
+              <div className='h5'>Resultados ({dataAPIProjects.total}):</div>
+
+              <CRow>
+                <CCol>
+                  <div className="d-grid gap-2 d-md-block mb-3">
+                    <CButton color="primary" className="me-md-2" onClick={handleNavigation}>Agregar</CButton>
+                    <CButton color="primary" variant="outline" disabled={selectedProjectsLocal.length === 0} onClick={handleLinkProject}>Vincular</CButton>
+                  </div>
+                </CCol>
+                <CCol className='text-end'>
+                    <div className='text-body-secondary'>{selectedProjectsLocal.length} elemento(s) seleccionado(s)</div>
+                </CCol>
+              </CRow>
+              <CRow>
+                <CCol className='mb-3'>
+                  <InfoProjectCheck data={dataAPIProjects.result} headers={HeadersProject} onAction={handleSelection}/>
+                </CCol>
+              </CRow>
+          </>)
+          :
+          (<LoadingSpinner />)
+        )
       }      
     </>
   )

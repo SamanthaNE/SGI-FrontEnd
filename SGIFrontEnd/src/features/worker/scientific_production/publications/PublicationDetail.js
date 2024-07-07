@@ -6,12 +6,14 @@ import InfoPublication from '../../../../components/cards/InfoPublicationDetail'
 import { KEYCODE } from '../../../../config/Constants'
 import axiosInstance from '../../../../config/HTTPService'
 import LoadingSpinner from '../../../../components/spinner/LoadingSpinner'
+import ErrorNotification from '../../../../components/cards/ErrorNotification'
 
  {/* CON LA API VA SIN [elementID - 1] */}
 
 const PublicationDetail = () => {
   const { elementID } = useParams();
   const [dataAPIPublication, setDataAPIPublication] = useState(null);
+  const [error, setError] = useState(false);
 
   // PUBLICATIONS
   useEffect(() => {
@@ -26,6 +28,7 @@ const PublicationDetail = () => {
                       setDataAPIPublication(response.data.publicationDetail);
                     })
                     .catch((err) => {
+                      setError(true);
                       let errMsg;
                       (!err.response) ? errMsg = 'No se pudo conectar con el servidor. Verifique su conexión.' : (err.response.code === 404 ? errMsg = "Servicio no disponible. Intenta más tarde." : errMsg = err.response.data.message);
                       console.log(errMsg);
@@ -47,7 +50,12 @@ const PublicationDetail = () => {
         <AccordionInfo title={'Proyectos'} data={dataAPIPublication.relatedProjects}/>
       </>)
       :
-      (<LoadingSpinner />)
+      (
+        error ?
+        (<ErrorNotification/>)
+        :
+        (<LoadingSpinner />)
+      )
     }
     </>
   )

@@ -1,12 +1,10 @@
 import React, { useState } from 'react'
 import { CButton, CCard, CCardBody, CCardSubtitle, CCol, CForm, CFormInput, CFormSelect, CRow } from '@coreui/react'
 import { SPTypes, dataQualificationCategories } from '../../../../data_files/HardData';
-import CriteriaRuleSelector from '../../../../components/selectors/CriteriaRuleSelector';
 import MandatoryRuleCriteria from '../../../../components/selectors/MandatoryRuleCriteria';
 import CIcon from '@coreui/icons-react';
 import { cilPlus } from '@coreui/icons';
 import RuleFactor from '../../../../components/selectors/RuleFactor';
-import RuleFactorSelector from '../../../../components/selectors/RuleFactorSelector';
 import axiosInstance from '../../../../config/HTTPService'
 import { KEYCODE } from '../../../../config/Constants';
 import { useNavigate } from 'react-router-dom';
@@ -55,6 +53,10 @@ const NewRule = () => {
     }
 
   };
+
+  const handleCancelUpdate = () => {
+    navigate('/desempeño/reglas')
+};
 
   // HANDLE CHANGES IN CRITERIA //
 
@@ -248,7 +250,7 @@ const NewRule = () => {
 
       {/* FINISH */}       
       <div className="d-grid gap-2 d-md-flex justify-content-md-end mt-3 mb-4">
-        <CButton color="primary" variant="outline" className="me-md-2">Cancelar</CButton>
+        <CButton color="primary" variant="outline" className="me-md-2" onClick={handleCancelUpdate}>Cancelar</CButton>
         <CButton color="primary" onClick={handleRuleData}>Guardar</CButton>
       </div>
     </>

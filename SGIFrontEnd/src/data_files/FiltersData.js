@@ -1,20 +1,31 @@
 export const SPFTypeD = [
   { label: 'Article', value: '1' },
   { label: 'Conference Paper', value: '2' },
-  { label: 'Book Chapter', value: '3' },
+  { label: 'Book', value: '3' },
+  { label: 'Book Chapter', value: '4' },
+  { label: 'Review', value: '5' },
 ]
 
 export const SPFTypeS = [
   { label: 'Journal', value: '1' },
-  { label: 'Book Series', value: '2' },
-  { label: 'Conference Proceeding', value: '3'},
+  { label: 'Book', value: '2' },
+  { label: 'Book Series', value: '3' },
+  { label: 'Conference Proceeding', value: '4'},
 ]
 
 export const PFResourceType = [
-  { label: 'Artículo de investigación', value: '1' },
-  { label: 'Actas de conferencia', value: '2' },
-  { label: 'Comunicación de congreso', value: '3'},
-  { label: 'Capítulo de libro', value: '4'},
+  { label: 'Artículo de investigación', value: 'ARTICULO_INVESTIGACION' },
+  { label: 'Artículo de revista', value: 'ARTICULO_REVISTA' },
+  { label: 'Artículo de datos', value: 'ARTICULO_DATOS'},
+  { label: 'Artículo de revisión', value: 'ARTICULO_REVISION'},
+  { label: 'Actas de conferencia', value: 'ACTA_CONFERENCIA' },
+  { label: 'Capítulo de libro', value: 'CAPITULO_LIBRO'},
+  { label: 'Carta', value: 'CARTA'},
+  { label: 'Comunicación de congreso', value: 'COMUNICACION_CONGRESO'},
+  { label: 'Editorial', value: 'EDITORIAL'},
+  { label: 'Libro', value: 'LIBRO'},
+  { label: 'Reseña de libro', value: 'RESEÑA_LIBRE'},
+  { label: 'Reseña', value: 'RESEÑA'},
 ]
 
 export const SPFGroup = [
@@ -24,11 +35,11 @@ export const SPFGroup = [
 ]
 
 export const PFStatus = [
-  { label: 'Por iniciar', value: '1' },
-  { label: 'En ejecución', value: '2' },
-  { label: 'En proceso de cierre', value: '4' },
-  { label: 'Cierre', value: '5' },
-  { label: 'Cancelado', value: '6' },
+  { label: 'Por iniciar', value: 'POR_INICIAR' },
+  { label: 'En ejecución', value: 'EN_EJECUCION' },
+  { label: 'En proceso de cierre', value: 'EN_PROCESO_CIERRRE' },
+  { label: 'Cierre', value: 'CERRADO' },
+  { label: 'Cancelado', value: 'CANCELADO' },
 ]
 
 export const NPOrg = [
@@ -37,11 +48,11 @@ export const NPOrg = [
 ]
 
 export const Category = [
-  { label: 'Categoria A', value: '1' },
-  { label: 'Categoria B', value: '2' },
-  { label: 'Categoria C', value: '3' },
-  { label: 'Categoria D', value: '4' },
-  { label: 'No evaluado', value: '5' },
+  { label: 'Categoria A', value: 'A' },
+  { label: 'Categoria B', value: 'B' },
+  { label: 'Categoria C', value: 'C' },
+  { label: 'Categoria D', value: 'D' },
+  { label: 'No evaluado', value: 'No evaluado' },
 ]
 
 /* **************************************** */

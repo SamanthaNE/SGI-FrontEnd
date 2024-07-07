@@ -6,10 +6,12 @@ import { KEYCODE } from '../../../../config/Constants'
 import axiosInstance from '../../../../config/HTTPService'
 import LoadingSpinner from '../../../../components/spinner/LoadingSpinner'
 import { dataSelectedProject } from '../../../../data_files/HardData'
+import ErrorNotification from '../../../../components/cards/ErrorNotification'
 
 const ProjectDetail = () => {
   const { elementID } = useParams();
   const [dataAPIProject, setDataAPIProject] = useState(null);
+  const [error, setError] = useState(false);
 
   // PROJECTS
   useEffect(() => {
@@ -22,8 +24,9 @@ const ProjectDetail = () => {
         
         const response = await axiosInstance.get('api/evaluation/projectdetail', { params });
         setDataAPIProject(response.data.projectAuthorDetail);
+        console.log(response.data.projectAuthorDetail)
       } catch (error) {
-        setDataAPIProject([])
+        setError(true);
         console.error('Error:', response.data.message);
       }
     }
@@ -44,11 +47,11 @@ const ProjectDetail = () => {
               <CCol sm={8} >
                 <CRow>
                   <div className="h6 mb-2">Resumen</div>
-                  <div className="mb-2 text-body">{dataAPIProject.description ?? <em>Sin información disponible</em>}</div>
+                  <div className="mb-2 text-body">{dataAPIProject.description ?? <em>Sin información</em>}</div>
                 </CRow>
                 <CRow>
                   <CCol sm={3} className="h6">Estado</CCol>
-                  <CCol className="text-body">{dataAPIProject.idProjectStatusTypeCONCYTEC ?? "-"}</CCol>
+                  <CCol className="text-body">{dataAPIProject.idProjectStatusTypeCONCYTEC ?? <i>Sin información</i>}</CCol>
                 </CRow>
                 <CRow>
                   <CCol sm={3} className="h6">Fecha de inicio</CCol>
@@ -60,14 +63,14 @@ const ProjectDetail = () => {
                 </CRow>
                 <CRow className="mb-2">
                   <div className="h6 mb-2">Equipo encargado del proyecto</div>
-                  {dataAPIProject.researchers.length > 0 ?
+                  {dataAPIProject.researchers && dataAPIProject.researchers.length > 0 ?
                     dataAPIProject.researchers.map((teamItems, indexT) => {
                       return (
-                        <div className="text-body" key={indexT}>{indexT + 1}. {teamItems.firstNames + " " + teamItems.familyNames} - {teamItems.roleName}</div>
+                        <div className="text-body" key={indexT}>{indexT + 1}. {teamItems.firstNames + " " + teamItems.familyNames} - {teamItems.idRolePerson}</div>
                       )
                     })
                     :
-                    <div className="text-body"><em>No asignado</em></div>
+                    <div className="text-body"><em>Sin información</em></div>
                   }
                 </CRow>
               </CCol>
@@ -75,8 +78,20 @@ const ProjectDetail = () => {
               <CCol sm={4} className='custom-border-padding'>
                 <CRow className="mb-2">
                   <div className="h6 mb-2">Grupo(s) de investigación</div>
-                  {dataSelectedProject[0].group.length > 0 ?
+                  {/*
+                  dataSelectedProject[0].group.length > 0 ?
                     dataSelectedProject[0].group.map((groupItems, indexG) => {
+                      return (
+                        <div className="text-body" key={indexG}>{groupItems.name}</div>
+                      )
+                    })
+                    :
+                    <div className="text-body"><em>No asignado</em></div>
+                  */}
+
+                  {
+                    dataAPIProject.researchGroups && dataAPIProject.researchGroups.length > 0 ?
+                    dataAPIProject.researchGroups.map((groupItems, indexG) => {
                       return (
                         <div className="text-body" key={indexG}>{groupItems.name}</div>
                       )
@@ -87,15 +102,15 @@ const ProjectDetail = () => {
                 </CRow>
                 <CRow className="mb-2">
                   <div className="h6 mb-2">Categoría</div>
-                  <div className="text-body">{dataSelectedProject[0].category ?? <em>No asignado</em>}</div>
+                  <div className="text-body">{dataAPIProject.evaluationDetail ? dataAPIProject.evaluationDetail.categoryName : <em>No asignado</em>}</div>
                 </CRow>
                 <CRow className="mb-2">
                   <div className="h6 mb-2">Sub categoría</div>
-                  <div className="text-body">{dataSelectedProject[0].subcategory ?? <em>No asignado</em>}</div>
+                  <div className="text-body">{dataAPIProject.evaluationDetail ? dataAPIProject.evaluationDetail.subcategoryName : <em>No asignado</em>}</div>
                 </CRow>
                 <CRow className="mb-2">
                   <div className="h6 mb-2">Puntaje asignado</div>
-                  <div className="text-body">{dataSelectedProject[0].score ?? <em>No asignado</em>}</div>
+                  <div className="text-body">{dataAPIProject.evaluationDetail ? dataAPIProject.evaluationDetail.evaluationScore : <em>No asignado</em>}</div>
                 </CRow>
               </CCol>
             </CRow>
@@ -105,7 +120,12 @@ const ProjectDetail = () => {
         <AccordionInfo title={'Financiamientos'} data={dataAPIProject.relatedFundingList}/>
       </>)
       :
-      (<LoadingSpinner />)
+      (
+        error ?
+        (<ErrorNotification/>)
+        :
+        (<LoadingSpinner />)
+      )
     }
     </>
   )

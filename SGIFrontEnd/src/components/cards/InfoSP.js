@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { CButton, CCard, CCardBody, CCardText, CCol, CRow } from '@coreui/react'
 import { useNavigate } from 'react-router-dom'
 
-const InfoSP = ({data, headers, btnnav, detail, btnmore = "", pagesize = 5}) => {
+const InfoSP = ({data, headers, btnnav, detail, btnmore = "", pagesize = 10}) => {
   const navigate = useNavigate()
   const [currentPage, setCurrentPage] = useState(1);
 

@@ -2,18 +2,17 @@ import React, { useState } from 'react'
 import { CButton, CCard, CCardBody, CCardTitle, CCol, CRow, CFormSelect } from '@coreui/react'
 import { Category, SPFGroup } from '../../data_files/FiltersData';
 
-const GroupsFilter = () => {
+const GroupsFilter = ({ onAction }) => {
   const [searchName, setSearchName] = useState('');
   const [selectedOptionCategory, setSelectedOptionCategory] = useState('');
 
-  const [searchResults, setSearchResults] = useState([]);
-
   const handleSearch = () => {
-    console.log(searchTitle);
-    console.log(selectedOptionCategory);
+    const results = {
+      'nameGroup': searchName === '' ? null : searchName,
+      'category': selectedOptionCategory === '' ? null : selectedOptionCategory,
+    };
 
-    const results = [];
-    setSearchResults(results);
+    onAction(results);
   };
 
   const handleClearFilter = () => {
@@ -39,8 +38,8 @@ const GroupsFilter = () => {
           <CCol sm={4}>
             <CFormSelect aria-label="category" value={selectedOptionCategory} onChange={(e) => setSelectedOptionCategory(e.target.value)}>
               <option value="">Categoría</option>
-              {Category.map((option) => (
-                <option  key={option.value} value={option.label}>
+              {Category.map((option, index) => (
+                <option  key={index} value={option.value}>
                   {option.label}
                 </option>
               ))}

@@ -6,10 +6,14 @@ import axiosInstance from '../../../config/HTTPService'
 import { KEYCODE } from '../../../config/Constants'
 import LoadingSpinner from '../../../components/spinner/LoadingSpinner'
 import { useSelector } from 'react-redux'
+import ErrorNotification from '../../../components/cards/ErrorNotification'
 
 const ScopusPublication = () => {
   const [dataAPI, setDataAPI] = useState(null);
-  //const user = useSelector(state => state.user);
+  const [error, setError] = useState(false)
+
+  const [filtersData, setFiltersData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const storedUserData = sessionStorage.getItem('user');
@@ -19,48 +23,70 @@ const ScopusPublication = () => {
     }
 
     const fetchData = async () => {
-        const params = {
-          'keyCode': KEYCODE,
-          'authid': user.scopusAuthorId ?? 0,
-        };
-        
-        await axiosInstance.get('api/scopus/publicationsauthor', { params })
-                          .then((response) => {
-                            setDataAPI(response.data);
-                          })
-                          .catch((err) => {
-                            let errMsg;
-                            (!err.response) ? errMsg = 'No se pudo conectar con el servidor. Verifique su conexión.' : (err.response.code === 404 ? errMsg = "Servicio no disponible. Intenta más tarde." : errMsg = err.response.data.message);
-                            console.log(errMsg);
-                            setDataAPI({result:[]})
-                          });
+      setIsLoading(true);
+
+      const params = {
+        'keyCode': KEYCODE,
+        'authid': user.scopusAuthorId ?? 0,
+        'title': filtersData ? filtersData.title : null,
+        'year': filtersData ? filtersData.year : null,
+        'author': filtersData ? filtersData.author : null,
+        'publisher': filtersData ? filtersData.publisher : null,
+        'aggregationType': filtersData ? filtersData.aggregationType : null,
+        'subTypeDescription': filtersData ? filtersData.subTypeDescription : null
+      };
+      
+      await axiosInstance.get('api/scopus/publicationsauthor', { params })
+                        .then((response) => {
+                          setDataAPI(response.data);
+                        })
+                        .catch((err) => {
+                          let errMsg;
+                          (!err.response) ? errMsg = 'No se pudo conectar con el servidor. Verifique su conexión.' : (err.response.code === 404 ? errMsg = "Servicio no disponible. Intenta más tarde." : errMsg = err.response.data.message);
+                          setError(true)
+                        })
+                        .finally(() =>{
+                          setIsLoading(false);
+                        });
     }
   
     fetchData();
 
-  }, [])
+  }, [filtersData])
+
+  const handleFilters = (filters) => {
+    setFiltersData(filters);
+  }
 
   return (
     <>
       {/* TITLE */}
       <div className='h4'>Publicaciones en revisión</div>
 
-      { dataAPI ?
-        (
-          <>
-            {/* FILTERS */}
-            <ScopusPubFilter data={dataAPI.result}/>
-
-            {/* HEADER */}
-            <div className='h5'>Resultados ({dataAPI.total}):</div>
-
-            {/* DYNAMIC DATA */}
-            <InfoSP data={dataAPI.result} headers={HeadersSP} btnnav={"/publicaciones/revision/detalle"} detail={true} />
-          </>
-        )
+      { isLoading ?
+        (<LoadingSpinner />)
         :
         (
-          <LoadingSpinner />
+          dataAPI ?
+          (
+            <>
+              {/* FILTERS */}
+              <ScopusPubFilter onAction={handleFilters}/>
+  
+              {/* HEADER */}
+              <div className='h5'>Resultados ({dataAPI.total}):</div>
+  
+              {/* DYNAMIC DATA */}
+              <InfoSP data={dataAPI.result} headers={HeadersSP} btnnav={"/publicaciones/revision/detalle"} detail={true} />
+            </>
+          )
+          :
+          (
+            error ?
+            (<ErrorNotification/>)
+            :
+            (<LoadingSpinner />)
+          )
         )
       }
       

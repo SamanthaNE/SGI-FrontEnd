@@ -24,6 +24,7 @@ import {
 import { KEYCODE } from '../../../config/Constants'
 import { getUserFromSessionStorage } from '../../../utils/userUtils'
 import axiosInstance from '../../../config/HTTPService'
+import PersonFilter from '../../../components/filters/PersonFilter'
 
 const user = getUserFromSessionStorage();
 
@@ -32,7 +33,13 @@ const NewProject = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch()
 
+  const [selectedTP, setSelectedTP] = useState([])
+  const [seletecTPPersonalRole, setSeletecTPPersonalRole] = useState(null);
+
+  let selectedTPPR = null;
+
   const currentProject = useSelector(state => state.curation.selectedProjects);
+  const selectedGroup = useSelector(state => state.curation.selectedOptionGroup);
 
   const { 
     projectTitle,
@@ -85,16 +92,48 @@ const NewProject = () => {
     const data = {
       idPerson: user.idPerson,
       idPersonRole: e.target.value,
+      idOrgUnit: selectedGroup
     }
 
-    const updatedTeam = [...currentTeam, data];
+    let updatedTeam;
+    teamProject.length > 1 ? 
+      updatedTeam = [...currentTeam, data]
+      :
+      updatedTeam = [data];
 
     dispatch(setTeamProject(updatedTeam));
   }
 
-  const handleProjectData = async(e) => {
-    console.log(selectedFundings)
-    
+  const handleSelectedTPPersonalRole = (e, TP) => { 
+    const data = {
+      personName: TP.firstNames + " " + TP.familyNames,
+      idPerson: TP.idPerson,
+      idPersonRole: e.target.value,
+      idOrgUnit: null
+    }
+
+    console.log(data)
+    selectedTPPR = null;
+
+    let updatedTeam = [...currentTeam];
+
+    const existingIndex = updatedTeam.findIndex(item => item.idPerson === TP.idPerson);
+
+    if (existingIndex !== -1) {
+      updatedTeam[existingIndex] = data;
+    } else {
+      updatedTeam.push(data);
+    }
+
+    dispatch(setTeamProject(updatedTeam));
+  }
+
+  const handleSelectionOfTeam = (data) => {
+    setSelectedTP(data);
+    console.log(data)
+  }
+
+  const handleProjectData = async(e) => {    
     const params = {
       keyCode: KEYCODE,
       title: projectTitle,
@@ -104,6 +143,8 @@ const NewProject = () => {
       funding: selectedFundings,
       projectTeam: teamProject,
     };
+
+    console.log(params)
 
     try {
       const response = await axiosInstance.post('api/scopus/newproject', params);
@@ -205,7 +246,7 @@ const NewProject = () => {
               (isParticipating) && 
               (
                 <CFormSelect  className='my-3' aria-label="orgunit"
-                              value={selectedPersonalRole} onChange={handleSelectedPersonalRole}>
+                              value={selectedPersonalRole || ""} onChange={handleSelectedPersonalRole}>
                   <option value="">Seleccione su rol</option>
                   {ProjectTeamRoles.map((option, indexPTR) => (
                     <option  key={indexPTR} value={option.value}>
@@ -225,15 +266,34 @@ const NewProject = () => {
           {
             (isTeam) && 
             (
-              <CRow className="align-items-end my-3">
-                <CCol xs={11}>
-                  <CFormInput type="text" id="teamSearch" placeholder="Nombre del investigador" />
-                </CCol>
-                <CCol xs={1}>
-                  <CButton color="primary" type="submit">Buscar</CButton>
-                </CCol>
-
-              </CRow>
+              <>
+                <div className='text-body-secundary mt-3 mb-1'>Investigadores a cargo del proyecto</div>
+                {
+                  selectedTP.length > 0 ?
+                    selectedTP.map((TP, index) => (
+                      <CRow className="align-items-end" key={index}>
+                        <CCol>
+                          <li>{TP.firstNames} {TP.familyNames}</li>
+                        </CCol>
+                        <CCol sm={4}>
+                          <CFormSelect aria-label="TPPR" value={selectedTPPR} onChange={(e) => handleSelectedTPPersonalRole(e, TP)}>
+                            <option value="">Seleccione su rol</option>
+                            {ProjectTeamRoles.map((option, indexPTR) => (
+                              <option  key={indexPTR} value={option.value}>
+                                {option.label}
+                              </option>
+                            ))}
+                          </CFormSelect>
+                        </CCol>
+                      </CRow>
+                    ))
+                    :
+                    teamProject.slice(1).map((TPP, indexTPP) =>(
+                      <li key={indexTPP}>{TPP.personName} - {TPP.idPersonRole}</li>
+                    ))
+                }
+                <PersonFilter onAction={handleSelectionOfTeam}/>
+              </>
             )
           }
 

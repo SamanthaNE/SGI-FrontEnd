@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { CButton, CCard, CCardBody, CCardTitle, CCol, CRow, CFormSelect } from '@coreui/react'
 import { SPFGroup, SPFTypeD, SPFTypeS } from '../../data_files/FiltersData';
 
-const ScopusPubFilter = ({data, performance = false}) => {
+const ScopusPubFilter = ({data, performance = false, onAction}) => {
   const [searchTitle, setSearchTitle] = useState('');
   const [searchJournalName, setSearchJournalName] = useState('');
   const [searchAuthor, setSearchAuthor] = useState('');
@@ -11,26 +11,17 @@ const ScopusPubFilter = ({data, performance = false}) => {
   const [searchYear, setSearchYear] = useState('');
   const [selectedOptionGroup, setSelectedOptionGroup] = useState('');
 
-  const [searchResults, setSearchResults] = useState([]);
-/*
-  const handleChangeTitle = (e) =>
-  {
-      const searchTerm = e.target.value;
-      const filtered = data.filter((item) => item.title.toLowerCase().includes(searchTerm.toLowerCase()));
-      setSearchTitle(filtered);
-      console.log(searchTitle);
-  };
-*/
   const handleSearch = () => {
-    console.log(searchTitle);
-    console.log(searchJournalName);
-    console.log(searchAuthor);
-    console.log(selectedOptionTypeD);
-    console.log(selectedOptionTypeS);
-    console.log(searchYear);
+    const results = {
+      'title': searchTitle === '' ? null : searchTitle,
+      'year': searchYear === '' ? null : searchYear,
+      'author': searchAuthor === '' ? null : searchAuthor,
+      'publisher': searchJournalName === '' ? null : searchJournalName,
+      'aggregationType': selectedOptionTypeS === '' ? null : selectedOptionTypeS,
+      'subTypeDescription': selectedOptionTypeD === '' ? null : selectedOptionTypeD
+    };
 
-    const results = [];
-    setSearchResults(results);
+    onAction(results);
   };
 
   const handleClearFilter = () => {

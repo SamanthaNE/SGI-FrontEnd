@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { CCard, CCardBody, CCardText, CCol, CFormCheck, CRow } from '@coreui/react'
 
-const InfoProjectCheck = ({data, headers, sptype, onAction, pagesize = 5}) => {
+const InfoProjectCheck = ({data, headers, sptype, onAction, pagesize = 10}) => {
   const [selectedSP, setSelectedSP] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
 

@@ -9,46 +9,68 @@ import axiosInstance from '../../../../config/HTTPService'
 const Projects = () => {
   const [dataAPIProjects, setDataAPIProjects] = useState(null);
 
+  const [filtersData, setFiltersData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   // PROJECTS
   useEffect(() => {
     const fetchData = async () => {
-        const params = {
-          'keyCode': KEYCODE,
-          'page': 1, // Dinamico?
-          'size': 50 // Dinamico?
-        };
+      setIsLoading(true);
 
-        await axiosInstance.get('api/scientificprod/projects', { params })
-                          .then((response) => {
-                            setDataAPIProjects(response.data);
-                            console.log(response.data)
-                          })
-                          .catch((err) => {
-                            let errMsg;
-                            (!err.response) ? errMsg = 'No se pudo conectar con el servidor. Verifique su conexión.' : (err.response.code === 404 ? errMsg = "Servicio no disponible. Intenta más tarde." : errMsg = err.response.data.message);
-                            console.log(errMsg);
-                            setDataAPIProjects([])
-                          });
+      const params = {
+        'keyCode': KEYCODE,
+        'page': 1, // Dinamico?
+        'size': 50, // Dinamico?
+        'title': filtersData ? filtersData.title : null,
+        'status': filtersData ? filtersData.status : null,
+        'startDate': filtersData ? filtersData.startDate : null,
+        'endDate': filtersData ? filtersData.endDate : null,
+        'fundingType': filtersData ? filtersData.fundingType : null,
+      };
+
+      await axiosInstance.get('api/scientificprod/projects', { params })
+                        .then((response) => {
+                          setDataAPIProjects(response.data);
+                          console.log(response.data)
+                        })
+                        .catch((err) => {
+                          let errMsg;
+                          (!err.response) ? errMsg = 'No se pudo conectar con el servidor. Verifique su conexión.' : (err.response.code === 404 ? errMsg = "Servicio no disponible. Intenta más tarde." : errMsg = err.response.data.message);
+                          console.log(errMsg);
+                          setDataAPIProjects([])
+                        })
+                        .finally(() =>{
+                          setIsLoading(false);
+                        });
     }
   
     fetchData();
-  }, [])
+  }, [filtersData])
+
+  const handleFilters = (filters) => {
+    setFiltersData(filters);
+  }
 
   return (
     <>
       <div className='h4'>Proyectos</div>
 
       {
-        dataAPIProjects ?
-        (<>
-          <ProjectsFilter data={dataAPIProjects.projects} performance={true}/>
-
-          <div className='h5'>Resultados ({dataAPIProjects.total}):</div>
-
-          <InfoSP data={dataAPIProjects.projects ?? []} headers={HeadersProjectEval} btnnav={"detalle"} detail={true} />
-        </>)
-        :
+        isLoading ?
         (<LoadingSpinner />)
+        :
+        (
+          dataAPIProjects ?
+          (<>
+            <ProjectsFilter onAction={handleFilters} performance={true}/>
+  
+            <div className='h5'>Resultados ({dataAPIProjects.total}):</div>
+  
+            <InfoSP data={dataAPIProjects.projects ?? []} headers={HeadersProjectEval} btnnav={"detalle"} detail={true} />
+          </>)
+          :
+          (<LoadingSpinner />)
+        )
       }      
     </>
   )
